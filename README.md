@@ -15,7 +15,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
   - goto `chrome://extensions/`
   - change to Developer mode
   - Load unpacked extension...
-  - select the /dist folder (after calling `ng build`)
+  - select the `/dist` folder (after calling `ng build`)
   - for reloading the plugin after code changes call `ng build` again and use the reload link in Chrome or `Ctrl+R`
 
 ## Development server
