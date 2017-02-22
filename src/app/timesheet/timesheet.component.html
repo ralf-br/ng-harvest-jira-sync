@@ -1,0 +1,18 @@
+<table class="table">
+  <tr *ngFor="let entry of timesheetEntries">
+    <td>{{entry.harvestEntry.notes}}</td>
+    <td>{{entry.harvestEntry.hours}}h</td>
+    <td>
+      <img src="/assets/icons/icon_harvest.png" *ngIf="entry.harvestEntry" />
+      <img src="/assets/icons/icon_jira.png" *ngIf="entry.jiraWorklog" />
+
+      <button *ngIf="entry.harvestEntry.hasJiraTicket() && !entry.jiraWorklog"  disabled="{{entry.syncing}}" (click)="syncToJira(entry)"
+          type="button" class="btn btn-default" aria-label="Left Align">
+
+        <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+        Sync to {{entry.harvestEntry.getJiraTicket()}}
+
+      </button>
+    </td>
+  </tr>
+</table>
