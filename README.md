@@ -16,13 +16,13 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
   - change to Developer mode
   - Load unpacked extension...
   - select the `/dist` folder (after calling `ng build`)
-  - for reloading the plugin after code changes call `ng build` again and use the reload link in Chrome or `Ctrl+R`
+  - for reloading the plugin after code changes just call `ng build` - chrome automatically detects changes
 
 ## Development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 - This will not allow the app to communicate to JIRA and Harvest for CSRF reasons.
-- Instead the app needs to be build and imported as chrome plugin
+- (!) Instead the app needs to be build using `ng build` and imported as chrome plugin
 
 ## Code scaffolding
 

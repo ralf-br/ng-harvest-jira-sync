@@ -5,4 +5,8 @@ export class TimesheetEntry {
   harvestEntry : HarvestEntry;
   jiraWorklog : JiraWorklog;
   syncing : boolean;
+
+  constructor(harvest : any) {
+    this.harvestEntry = harvest;
+  }
 }

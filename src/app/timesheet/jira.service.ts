@@ -5,12 +5,13 @@ import {AlertService} from "../alert/alert.service";
 import {TimesheetEntry} from "./timesheet-entry";
 import {JiraWorklog} from "./model/jira-worklog";
 import 'rxjs/add/operator/toPromise';
+import {environment} from "../../environments/environment";
 
 @Injectable()
 export class JiraService {
 
-  private jiraBaseUrl = "https://jira.device-insight.com/rest/api/2/";
-  private jiraIssueUrl = this.jiraBaseUrl + "issue/";
+  private jiraRestBaseUrl = environment.jiraBaseUrl + "rest/api/2/";
+  private jiraIssueUrl = this.jiraRestBaseUrl + "issue/";
   private jiraWorklog = "/worklog";
 
   constructor(private http:Http,

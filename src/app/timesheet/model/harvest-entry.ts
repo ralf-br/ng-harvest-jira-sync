@@ -16,12 +16,11 @@ export class HarvestEntry extends JsonSerializable{
   hours_without_timer: number;
   hours: number;
 
-  //needs to start from very beginning of comment
-  //1-n alphabetic characters. (ignoring case)
-  //a dash -
-  //1-n digits
-  //check that the ticket number is ended with : or whitespace or endOfString
-  readonly jiraTicketRegexp = /^([A-Z]+-[0-9]+)(?=\s|:|$)/i;
+  //https://regex101.com/r/cqsnSc/1
+  readonly jiraTicketRegexp = /^[A-Z]+-[0-9]+(?=\s|:|$)/i;
+
+  //https://regex101.com/r/vKeuu1/2
+  readonly jiraTicketPrefixToRemoveRegexp = /^[A-Z]+-[0-9]+(?:\s+|:\s*|\s*$)/i;
 
   public hasJiraTicket = () : boolean => {
     return this.jiraTicketRegexp.test(this.notes);
@@ -32,6 +31,14 @@ export class HarvestEntry extends JsonSerializable{
       return this.jiraTicketRegexp.exec(this.notes)[0].toUpperCase();
     }
     return "";
+  }
+
+  public getCommentWithoutJiraTicket = () : string => {
+    if(!this.hasJiraTicket()){
+      return this.notes;
+    } else {
+      return this.notes.replace(this.jiraTicketPrefixToRemoveRegexp,"")
+    }
   }
 
   //returns ex. "2017-02-19T09:00:00.000+0100"
