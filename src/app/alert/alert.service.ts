@@ -7,10 +7,10 @@ export class AlertService {
 
   constructor() { }
 
-  public error(errorText : string){
+  public error(errorText : string, concreteErrorToLog? : any){
     this.alertText = errorText;
     this.alertStatus = "alert-danger";
-    console.error(this.alertStatus + ": " + errorText);
+    console.error(this.alertStatus + ": " + errorText, concreteErrorToLog);
   }
 
   public info(infoText: string){

@@ -1,18 +1,17 @@
 import {Injectable} from "@angular/core";
-import {Observable, BehaviorSubject} from "rxjs";
+import {Stream} from "ts-stream";
 import {HarvestService} from "./harvest.service";
 import {AlertService} from "../alert/alert.service";
-import {Stream} from "ts-stream";
 import {HarvestEntry} from "./model/harvest-entry";
 import {TimesheetEntry} from "./timesheet-entry";
 import {JiraService} from "./jira.service";
+import {JiraWorklog} from "./model/jira-worklog";
 
 
 @Injectable()
 export class TimesheetService {
 
-  private _timesheetEntries: BehaviorSubject<TimesheetEntry[]> = new BehaviorSubject([]);
-  public timesheetEntries: Observable<TimesheetEntry[]> = this._timesheetEntries.asObservable();
+  public timesheetEntries: TimesheetEntry[] = [];
 
   constructor(private harvestService : HarvestService,
               private jiraService : JiraService,
@@ -25,26 +24,21 @@ export class TimesheetService {
           .map(json => new HarvestEntry(json))
           .toArray()
           .then(this.processHarvestEntries),
-        error => this.handleHarvestError,
-      )
+        error => this.alertService.error("Cannot get Harvest Timesheet - are you logged in?", error),
+      );
   }
 
   public syncToJira(timesheetEntry : TimesheetEntry) {
     timesheetEntry.syncing = true;
     this.jiraService.syncToJira(timesheetEntry)
-      .then(this.processJiraSync);
-  }
-
-  private processJiraSync = (timesheetEntry : TimesheetEntry) => {
-    this.alertService.success("Created JIRA worklog for " + timesheetEntry.harvestEntry.getJiraTicket());
-    timesheetEntry.syncing = false;
-  }
-
-
-  private handleHarvestError = (error: any): Promise<any> => {
-    console.error('An error occurred getting the timesheet from harvest', error);
-    this.alertService.error("Cannot get Harvest Timesheet - are you logged in?");
-    return Promise.reject(error.message || error);
+      .finally(() => timesheetEntry.syncing = false)
+      .subscribe(
+        response => {
+          timesheetEntry.jiraWorklog = response.json() as JiraWorklog;
+          this.alertService.success("Created JIRA worklog for " + timesheetEntry.harvestEntry.getJiraTicket());
+        },
+        error => this.alertService.error("Cannot save to Jira - does the ticket nr exist? are you logged in?", error)
+      );
   }
 
   private processHarvestEntries = (harvestEntries:HarvestEntry[]) => {
@@ -58,7 +52,7 @@ export class TimesheetService {
     Stream.from(harvestEntries)
       .map(harvestEntry => new TimesheetEntry(harvestEntry))
       .toArray()
-      .then(timesheetEntries => this._timesheetEntries.next(timesheetEntries));
+      .then(timesheetEntries => this.timesheetEntries = timesheetEntries);
   }
 
 }
