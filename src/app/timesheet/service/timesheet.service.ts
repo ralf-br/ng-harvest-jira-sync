@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Stream} from "ts-stream";
 import {HarvestService} from "./harvest.service";
-import {AlertService} from "../alert/alert.service";
-import {HarvestEntry} from "./model/harvest-entry";
-import {TimesheetEntry} from "./model/timesheet-entry";
+import {AlertService} from "../../alert/alert.service";
+import {HarvestEntry} from "../model/harvest-entry";
+import {TimesheetEntry} from "../model/timesheet-entry";
 import {JiraService} from "./jira.service";
-import {JiraWorklog} from "./model/jira-worklog";
+import {JiraWorklog} from "../model/jira-worklog";
 
 
 @Injectable()
@@ -30,7 +30,7 @@ export class TimesheetService {
 
   public syncToJira(timesheetEntry : TimesheetEntry) {
     timesheetEntry.syncing = true;
-    this.jiraService.syncToJira(timesheetEntry)
+    this.jiraService.copyHarvestToJira(timesheetEntry)
       .finally(() => timesheetEntry.syncing = false)
       .subscribe(
         response => {

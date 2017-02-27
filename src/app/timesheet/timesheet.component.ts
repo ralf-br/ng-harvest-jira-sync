@@ -1,8 +1,8 @@
 import {Component, OnInit} from "@angular/core";
-import {HarvestService} from "./harvest.service";
-import {JiraService} from "./jira.service";
+import {HarvestService} from "./service/harvest.service";
+import {JiraService} from "./service/jira.service";
 import {environment} from "../../environments/environment";
-import {TimesheetService} from "./timesheet.service";
+import {TimesheetService} from "./service/timesheet.service";
 
 @Component({
   selector: 'app-timesheet',

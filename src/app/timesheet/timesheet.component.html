@@ -13,7 +13,7 @@
       </span>
       <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog" />
 
-      <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="timesheetService.syncToJira(entry)"
+      <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="timesheetService.copyHarvestToJira(entry)"
           type="button" class="btn btn-default" aria-label="Left Align">
 
         <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
