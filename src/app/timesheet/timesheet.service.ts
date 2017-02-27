@@ -3,7 +3,7 @@ import {Stream} from "ts-stream";
 import {HarvestService} from "./harvest.service";
 import {AlertService} from "../alert/alert.service";
 import {HarvestEntry} from "./model/harvest-entry";
-import {TimesheetEntry} from "./timesheet-entry";
+import {TimesheetEntry} from "./model/timesheet-entry";
 import {JiraService} from "./jira.service";
 import {JiraWorklog} from "./model/jira-worklog";
 

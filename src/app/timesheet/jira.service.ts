@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {AlertService} from "../alert/alert.service";
 
-import {TimesheetEntry} from "./timesheet-entry";
+import {TimesheetEntry} from "./model/timesheet-entry";
 import {JiraWorklog} from "./model/jira-worklog";
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";

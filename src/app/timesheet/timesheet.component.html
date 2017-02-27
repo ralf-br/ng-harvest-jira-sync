@@ -7,10 +7,13 @@
     </td>
     <td>{{entry.harvestEntry.hours}}h</td>
     <td>
-      <img src="/assets/icons/icon_harvest.png" *ngIf="entry.harvestEntry" />
-      <img src="/assets/icons/icon_jira.png" *ngIf="entry.jiraWorklog" />
+      <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" />
+      <span class="harvest-timer" *ngIf="entry.harvestEntry.timer_started_at">
+        <img src="/assets/icons/harvest_timer.gif" />
+      </span>
+      <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog" />
 
-      <button *ngIf="entry.harvestEntry.hasJiraTicket() && !entry.jiraWorklog"  [disabled]="entry.syncing" (click)="timesheetService.syncToJira(entry)"
+      <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="timesheetService.syncToJira(entry)"
           type="button" class="btn btn-default" aria-label="Left Align">
 
         <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>

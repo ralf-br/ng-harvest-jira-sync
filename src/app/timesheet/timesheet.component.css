@@ -6,3 +6,16 @@ table img{
   width: 30px;
   height: 30px;
 }
+
+span.harvest-timer{
+  background: #f78e2b;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+span.harvest-timer img{
+  width: 20px;
+  height: 20px;
+  margin: 3px;
+}

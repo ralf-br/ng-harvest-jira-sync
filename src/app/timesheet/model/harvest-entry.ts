@@ -15,6 +15,7 @@ export class HarvestEntry extends JsonSerializable{
   notes: string;
   hours_without_timer: number;
   hours: number;
+  timer_started_at: string;
 
   //https://regex101.com/r/cqsnSc/1
   readonly jiraTicketRegexp = /^[A-Z]+-[0-9]+(?=\s|:|$)/i;
