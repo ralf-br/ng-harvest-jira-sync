@@ -11,6 +11,8 @@ import {TimesheetService} from "./service/timesheet.service";
   providers:[TimesheetService, HarvestService, JiraService]
 })
 export class TimesheetComponent implements OnInit {
+
+  //Used for the html link to JIRA - ignore "unused" warning
   private jiraBaseUrl = environment.jiraBaseUrl;
 
   constructor(private timesheetService : TimesheetService) { }

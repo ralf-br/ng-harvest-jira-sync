@@ -28,7 +28,7 @@ export class TimesheetService {
       );
   }
 
-  public syncToJira(timesheetEntry : TimesheetEntry) {
+  public copyHarvestToJira(timesheetEntry : TimesheetEntry) {
     timesheetEntry.syncing = true;
     this.jiraService.copyHarvestToJira(timesheetEntry)
       .finally(() => timesheetEntry.syncing = false)

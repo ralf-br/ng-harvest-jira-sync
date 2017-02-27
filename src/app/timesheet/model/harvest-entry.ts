@@ -1,5 +1,6 @@
 
 import {JsonSerializable} from "./json-serializable";
+import {Utils} from "../../utils/Utils";
 
 export class HarvestEntry extends JsonSerializable{
   id: number;
@@ -36,10 +37,14 @@ export class HarvestEntry extends JsonSerializable{
 
   public getCommentWithoutJiraTicket = () : string => {
     if(!this.hasJiraTicket()){
-      return this.notes;
+      return this.getDecodedNotes();
     } else {
-      return this.notes.replace(this.jiraTicketPrefixToRemoveRegexp,"")
+      return this.getDecodedNotes().replace(this.jiraTicketPrefixToRemoveRegexp,"")
     }
+  }
+
+  getDecodedNotes = () : string => {
+    return Utils.decodeHtmlEntities(this.notes);
   }
 
   //returns ex. "2017-02-19T09:00:00.000+0100"
