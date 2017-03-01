@@ -20,4 +20,8 @@ export class AlertComponent implements OnInit {
   get alertText(){
     return this.alertService.alertText;
   }
+
+  get alertTextDetail(){
+    return this.alertService.alertTextDetail;
+  }
 }

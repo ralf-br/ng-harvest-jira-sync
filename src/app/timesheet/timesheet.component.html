@@ -24,4 +24,7 @@
   </tr>
 </table>
 <br/>
-Jira Account: {{myJiraAccount.displayName}} ({{myJiraAccount.key}})
+<span *ngIf="myJiraAccount.key">
+  Jira Account: {{myJiraAccount.displayName}} ({{myJiraAccount.key}})
+</span>
+

@@ -1,3 +1,8 @@
 p{
   width: 400px;
 }
+
+.alertDetails{
+  font-size: smaller;
+  display: block;
+}

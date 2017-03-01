@@ -7,6 +7,7 @@ import {TimesheetEntry} from "../model/timesheet-entry";
 import {JiraService} from "./jira.service";
 import {JiraWorklog} from "../model/jira-worklog";
 import {JiraAccount} from "../model/jira-account";
+import {Observable} from "rxjs";
 
 
 @Injectable()
@@ -20,8 +21,21 @@ export class TimesheetService {
               private alertService : AlertService) { }
 
   public initTimesheet() {
-    this.loadMyJiraAccount();
-    this.loadTodaysHarvestEntries();
+    Observable.forkJoin(
+      this.jiraService.loadMyJiraAccount(),
+      this.harvestService.loadTodaysHarvestEntries()
+    ).subscribe(
+      resultArray => {
+        this.myJiraAccount = resultArray[0];
+        console.log("Got Jira Account with key " + this.myJiraAccount.key);
+
+        Stream.from(resultArray[1].day_entries)
+          .map(json => new HarvestEntry(json))
+          .toArray()
+          .then(this.processHarvestEntries)
+      },
+      error => this.alertService.error("I'm not able to connect to Jira or Harvest.", error)
+    )
   }
 
   public copyHarvestToJira(timesheetEntry : TimesheetEntry) {
@@ -33,28 +47,7 @@ export class TimesheetService {
           timesheetEntry.jiraWorklog = jiraWorklog;
           this.alertService.success("Created JIRA worklog for " + timesheetEntry.harvestEntry.getJiraTicket());
         },
-        error => this.alertService.error("Cannot save to Jira - does the ticket nr exist? are you logged in?", error)
-      );
-  }
-
-  private loadMyJiraAccount() {
-    this.jiraService.loadMyJiraAccount()
-      .subscribe(
-        jiraAccount => {
-          this.myJiraAccount = jiraAccount;
-          console.log("Got Jira Account with key " + this.myJiraAccount.key);
-        },
-        error => this.alertService.error("Cannot get your account info from Jira - are you logged in?", error)
-      );
-  }
-
-  private loadTodaysHarvestEntries() {
-    this.harvestService.loadTodaysHarvestEntries()
-      .subscribe(json => Stream.from(json.day_entries)
-        .map(json => new HarvestEntry(json))
-        .toArray()
-        .then(this.processHarvestEntries),
-        error => this.alertService.error("Cannot get Harvest Timesheet - are you logged in?", error),
+        error => this.alertService.error("Cannot save to Jira - does the ticket nr exist?", error)
       );
   }
 
