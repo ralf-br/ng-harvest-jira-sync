@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {AlertService} from "../../alert/alert.service";
 
@@ -6,7 +6,7 @@ import {TimesheetEntry} from "../model/timesheet-entry";
 import {JiraWorklog} from "../model/jira-worklog";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
-import "rxjs/add/operator/finally";
+import {JiraAccount} from "../model/jira-account";
 
 @Injectable()
 export class JiraService {
@@ -21,14 +21,18 @@ export class JiraService {
 
   loadTodaysJiraWorklogs() : Observable<Response> {
     //TODO in work
-    return this.http.get(this.jiraRestBaseUrl, { withCredentials: true });
+    return this.http.get(this.jiraRestBaseUrl, { withCredentials: true })
+      .map(response => response.json());
+      //.map(json => new JiraWorklog(json));
   }
 
-  loadMyJiraAccount() : Observable<Response> {
-    return this.http.get(this.jiraMyselfUrl, { withCredentials: true });
+  loadMyJiraAccount() : Observable<JiraAccount> {
+    return this.http.get(this.jiraMyselfUrl, { withCredentials: true })
+      .map(response => response.json())
+      .map(json => new JiraAccount(json));
   }
 
-  copyHarvestToJira(timesheetEntry: TimesheetEntry) : Observable<Response> {
+  copyHarvestToJira(timesheetEntry: TimesheetEntry) : Observable<JiraWorklog> {
     let postWorklogUrl = this.jiraIssueUrl + timesheetEntry.harvestEntry.getJiraTicket() + this.jiraWorklog;
 
     let jiraWorklog : JiraWorklog = new JiraWorklog();
@@ -36,6 +40,8 @@ export class JiraService {
     jiraWorklog.started = timesheetEntry.harvestEntry.getISOStartDate();
     jiraWorklog.timeSpentSeconds = timesheetEntry.harvestEntry.hours * 60 * 60;
 
-    return this.http.post(postWorklogUrl, jiraWorklog, { withCredentials: true });
+    return this.http.post(postWorklogUrl, jiraWorklog, { withCredentials: true })
+      .map(response => response.json())
+      .map(json => new JiraWorklog(json));
   }
 }

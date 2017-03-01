@@ -4,10 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import {myRequestOptionsProvider} from "./default-request-options.service";
+import { myRequestOptionsProvider } from "./default-request-options.service";
 import { AlertComponent } from './alert/alert.component';
-import {AlertService} from "./alert/alert.service";
+import { AlertService } from "./alert/alert.service";
 import { TimesheetComponent } from './timesheet/timesheet.component';
+import "rxjs/add/operator/finally";
+import "rxjs/add/operator/map";
+import "rxjs/add/observable/forkJoin";
+
 
 @NgModule({
   declarations: [

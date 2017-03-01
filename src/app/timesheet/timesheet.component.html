@@ -1,5 +1,5 @@
 <table class="table">
-  <tr *ngFor="let entry of timesheetService.timesheetEntries">
+  <tr *ngFor="let entry of timesheetEntries">
     <td>
       <a *ngIf="entry.harvestEntry.hasJiraTicket()"
         href="{{jiraBaseUrl}}browse/{{entry.harvestEntry.getJiraTicket()}}?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
@@ -13,7 +13,7 @@
       </span>
       <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog" />
 
-      <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="timesheetService.copyHarvestToJira(entry)"
+      <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="copyHarvestToJira(entry)"
           type="button" class="btn btn-default" aria-label="Left Align">
 
         <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
@@ -24,4 +24,4 @@
   </tr>
 </table>
 <br/>
-Jira Account: {{timesheetService.myJiraAccount.displayName}} ({{timesheetService.myJiraAccount.key}})
+Jira Account: {{myJiraAccount.displayName}} ({{myJiraAccount.key}})

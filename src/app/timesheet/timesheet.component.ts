@@ -3,6 +3,7 @@ import {HarvestService} from "./service/harvest.service";
 import {JiraService} from "./service/jira.service";
 import {environment} from "../../environments/environment";
 import {TimesheetService} from "./service/timesheet.service";
+import {TimesheetEntry} from "./model/timesheet-entry";
 
 @Component({
   selector: 'app-timesheet',
@@ -19,6 +20,18 @@ export class TimesheetComponent implements OnInit {
 
   ngOnInit() {
     this.timesheetService.initTimesheet();
+  }
+
+  get timesheetEntries(){
+    return this.timesheetService.timesheetEntries;
+  }
+
+  get myJiraAccount(){
+    return this.timesheetService.myJiraAccount;
+  }
+
+  private copyHarvestToJira(timesheetEntry : TimesheetEntry){
+    this.timesheetService.copyHarvestToJira(timesheetEntry);
   }
 
 }

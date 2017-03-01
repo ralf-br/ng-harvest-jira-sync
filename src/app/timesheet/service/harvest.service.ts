@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Http, Response} from "@angular/http";
+import {Http} from "@angular/http";
 import {Observable} from "rxjs";
 
 @Injectable()
@@ -9,11 +9,9 @@ export class HarvestService {
 
   constructor(private http:Http) { }
 
-  loadTodaysHarvestEntries(): Observable<Response> {
-    return this.http.get(this.harvestDailyUrl, { withCredentials: true });
+  loadTodaysHarvestEntries(): Observable<any> {
+    return this.http.get(this.harvestDailyUrl, { withCredentials: true })
+      .map(response => response.json());
   }
-
-
-
 
 }

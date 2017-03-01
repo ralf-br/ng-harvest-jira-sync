@@ -29,8 +29,8 @@ export class TimesheetService {
     this.jiraService.copyHarvestToJira(timesheetEntry)
       .finally(() => timesheetEntry.syncing = false)
       .subscribe(
-        response => {
-          timesheetEntry.jiraWorklog = response.json() as JiraWorklog;
+        jiraWorklog => {
+          timesheetEntry.jiraWorklog = jiraWorklog;
           this.alertService.success("Created JIRA worklog for " + timesheetEntry.harvestEntry.getJiraTicket());
         },
         error => this.alertService.error("Cannot save to Jira - does the ticket nr exist? are you logged in?", error)
@@ -40,8 +40,8 @@ export class TimesheetService {
   private loadMyJiraAccount() {
     this.jiraService.loadMyJiraAccount()
       .subscribe(
-        response => {
-          this.myJiraAccount = new JiraAccount(response.json());
+        jiraAccount => {
+          this.myJiraAccount = jiraAccount;
           console.log("Got Jira Account with key " + this.myJiraAccount.key);
         },
         error => this.alertService.error("Cannot get your account info from Jira - are you logged in?", error)
@@ -50,11 +50,10 @@ export class TimesheetService {
 
   private loadTodaysHarvestEntries() {
     this.harvestService.loadTodaysHarvestEntries()
-      .subscribe(
-        response => Stream.from(response.json().day_entries)
-          .map(json => new HarvestEntry(json))
-          .toArray()
-          .then(this.processHarvestEntries),
+      .subscribe(json => Stream.from(json.day_entries)
+        .map(json => new HarvestEntry(json))
+        .toArray()
+        .then(this.processHarvestEntries),
         error => this.alertService.error("Cannot get Harvest Timesheet - are you logged in?", error),
       );
   }
