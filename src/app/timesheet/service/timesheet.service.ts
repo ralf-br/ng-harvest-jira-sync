@@ -8,6 +8,7 @@ import {JiraService} from "./jira.service";
 import {JiraWorklog} from "../model/jira-worklog";
 import {JiraAccount} from "../model/jira-account";
 import {Observable} from "rxjs";
+import {JiraIssue} from "../model/jira-issue";
 
 
 @Injectable()
@@ -15,6 +16,7 @@ export class TimesheetService {
 
   public timesheetEntries: TimesheetEntry[] = [];
   public myJiraAccount: JiraAccount = new JiraAccount();
+  public myJiraIssues: JiraIssue[] = [];
 
   constructor(private harvestService : HarvestService,
               private jiraService : JiraService,
@@ -34,7 +36,11 @@ export class TimesheetService {
           .toArray()
           .then(this.processHarvestEntries)
       },
-      error => this.alertService.error("I'm not able to connect to Jira or Harvest.", error)
+      error => this.alertService.error("I'm not able to connect to Jira or Harvest.", error),
+      () => this.jiraService.loadTodaysJiraIssues().subscribe(
+        issues => {console.log(issues); this.myJiraIssues = issues},
+        error => this.alertService.error("Error getting Jira issues with worklog.", error)
+      )
     )
   }
 

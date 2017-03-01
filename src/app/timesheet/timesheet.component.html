@@ -28,3 +28,13 @@
   Jira Account: {{myJiraAccount.displayName}} ({{myJiraAccount.key}})
 </span>
 
+<br/>
+<span *ngIf="myJiraIssues.length > 0">
+  Found worklogs in JiraTickets:
+</span>
+<ul>
+  <li *ngFor="let issue of myJiraIssues">
+    {{issue.key}}
+  </li>
+</ul>
+

@@ -7,6 +7,7 @@ import {JiraWorklog} from "../model/jira-worklog";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
 import {JiraAccount} from "../model/jira-account";
+import {JiraIssue} from "../model/jira-issue";
 
 @Injectable()
 export class JiraService {
@@ -14,16 +15,15 @@ export class JiraService {
   private jiraRestBaseUrl = environment.jiraBaseUrl + "rest/api/2/";
   private jiraIssueUrl = this.jiraRestBaseUrl + "issue/";
   private jiraMyselfUrl = this.jiraRestBaseUrl + "myself";
+  private jiraSearchWorklog = this.jiraRestBaseUrl + "search?fields=summary&jql=worklogAuthor=currentUser() and worklogDate='2017-03-01'"; //TODO DATE!!!!!!
   private jiraWorklog = "/worklog";
 
   constructor(private http:Http,
               private alertService:AlertService) { }
 
-  loadTodaysJiraWorklogs() : Observable<Response> {
-    //TODO in work
-    return this.http.get(this.jiraRestBaseUrl, { withCredentials: true })
-      .map(response => response.json());
-      //.map(json => new JiraWorklog(json));
+  loadTodaysJiraIssues() : Observable<JiraIssue[]> {
+    return this.http.get(this.jiraSearchWorklog, { withCredentials: true })
+      .map(response => response.json().issues);
   }
 
   loadMyJiraAccount() : Observable<JiraAccount> {
