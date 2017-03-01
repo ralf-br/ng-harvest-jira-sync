@@ -18,7 +18,7 @@ export class TimesheetComponent implements OnInit {
   constructor(private timesheetService : TimesheetService) { }
 
   ngOnInit() {
-    this.timesheetService.loadTodaysHarvestEntries();
+    this.timesheetService.initTimesheet();
   }
 
 }

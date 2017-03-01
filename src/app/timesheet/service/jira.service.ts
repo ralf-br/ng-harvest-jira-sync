@@ -13,6 +13,7 @@ export class JiraService {
 
   private jiraRestBaseUrl = environment.jiraBaseUrl + "rest/api/2/";
   private jiraIssueUrl = this.jiraRestBaseUrl + "issue/";
+  private jiraMyselfUrl = this.jiraRestBaseUrl + "myself";
   private jiraWorklog = "/worklog";
 
   constructor(private http:Http,
@@ -21,6 +22,10 @@ export class JiraService {
   loadTodaysJiraWorklogs() : Observable<Response> {
     //TODO in work
     return this.http.get(this.jiraRestBaseUrl, { withCredentials: true });
+  }
+
+  loadMyJiraAccount() : Observable<Response> {
+    return this.http.get(this.jiraMyselfUrl, { withCredentials: true });
   }
 
   copyHarvestToJira(timesheetEntry: TimesheetEntry) : Observable<Response> {
