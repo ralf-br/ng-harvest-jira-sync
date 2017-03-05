@@ -7,6 +7,14 @@ table img{
   height: 30px;
 }
 
+table td{
+  vertical-align: middle;
+}
+
+table td.comment{
+  white-space: pre-line;
+}
+
 span.harvest-timer{
   background: #f78e2b;
   border: 1px solid transparent;

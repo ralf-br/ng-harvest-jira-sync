@@ -1,17 +1,20 @@
 <table class="table">
   <tr *ngFor="let entry of timesheetEntries">
-    <td>
-      <a *ngIf="entry.harvestEntry.hasJiraTicket()"
-        href="{{jiraBaseUrl}}browse/{{entry.harvestEntry.getJiraTicket()}}?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
-        target="_blank">{{entry.harvestEntry.getJiraTicket()}}: </a>{{entry.harvestEntry.getCommentWithoutJiraTicket()}}
+    <td class="comment">
+      <a *ngIf="entry.hasJiraTicket()"
+        href="{{jiraBaseUrl}}browse/{{entry.getJiraTicket()}}?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
+        target="_blank">{{entry.getJiraTicket()}}: </a>{{entry.getCommentWithoutJiraTicket()}}
     </td>
-    <td>{{entry.harvestEntry.hours}}h</td>
+    <td>{{entry.getHours()}}h</td>
     <td>
       <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" />
-      <span class="harvest-timer" *ngIf="entry.harvestEntry.timer_started_at">
+      <span class="harvest-timer" *ngIf="entry.harvestEntry && entry.harvestEntry.timer_started_at">
         <img src="/assets/icons/harvest_timer.gif" />
       </span>
-      <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog" />
+
+      <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog"
+        (mouseover)="trashJiraIcon($event)" (mouseout)="normalJiraIcon($event)"
+        (click)="deleteJiraWorklog(entry)" title="Delete JIRA worklog on click!"/>
 
       <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="copyHarvestToJira(entry)"
           type="button" class="btn btn-default" aria-label="Left Align">
@@ -24,17 +27,3 @@
   </tr>
 </table>
 <br/>
-<span *ngIf="myJiraAccount.key">
-  Jira Account: {{myJiraAccount.displayName}} ({{myJiraAccount.key}})
-</span>
-
-<br/>
-<span *ngIf="myJiraIssues.length > 0">
-  Found worklogs in JiraTickets:
-</span>
-<ul>
-  <li *ngFor="let issue of myJiraIssues">
-    {{issue.key}}
-  </li>
-</ul>
-

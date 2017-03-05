@@ -10,7 +10,11 @@ export class AlertService {
 
   public error(errorText : string, concreteErrorToLog? : any){
     this.alertTextDetail = null;
-    if(concreteErrorToLog.status == 401){
+    if(concreteErrorToLog.status == 0){
+      this.alertTextDetail = "Could not resolve host or chrome permission is missing. Are you online?";
+    } else if(concreteErrorToLog.status == 404){
+      this.alertTextDetail = "The http error code is 404. Is this url correct? '" + concreteErrorToLog.url + "' ?";
+    } else if(concreteErrorToLog.status == 401){
       this.alertTextDetail = "The http error code is 401. Are you logged in and authorized to query '" + concreteErrorToLog.url + "' ?";
     }
 

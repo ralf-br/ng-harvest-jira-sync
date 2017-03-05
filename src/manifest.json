@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Harvest -> JIRA Sync",
-  "description": "Let's see....",
+  "description": "This chrome extension gets your Harvest Timesheet plus your Jira Worklog Entries and compares them. You need to be logged in in Harvest and Jira upfront as this extension only reuses your currently active logins. If date, time and comment of your entries do match they will be shown in one line with a Harvest & Jira Icon. If the entry is only in Harvest and the comment begins with a valid Jira ticket number, you'll see a 'Sync to Ticket Nr' Button which creates a corresponding Jira worklog for you. This extension is still in an early BETA stage so handle it with care - double check your bookings - and please report any bugs or feature requests.",
   "version": "0.1",
 
   "browser_action": {

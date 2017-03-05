@@ -1,6 +1,6 @@
 
 import {JsonSerializable} from "./json-serializable";
-import {Utils} from "../../utils/Utils";
+import {UtilsString} from "../../utils/UtilsString";
 
 export class HarvestEntry extends JsonSerializable{
   id: number;
@@ -26,14 +26,14 @@ export class HarvestEntry extends JsonSerializable{
 
   public hasJiraTicket = () : boolean => {
     return this.jiraTicketRegexp.test(this.notes);
-  }
+  };
 
   public getJiraTicket = () : string => {
     if(this.hasJiraTicket){
       return this.jiraTicketRegexp.exec(this.notes)[0].toUpperCase();
     }
     return "";
-  }
+  };
 
   public getCommentWithoutJiraTicket = () : string => {
     if(!this.hasJiraTicket()){
@@ -41,11 +41,15 @@ export class HarvestEntry extends JsonSerializable{
     } else {
       return this.getDecodedNotes().replace(this.jiraTicketPrefixToRemoveRegexp,"")
     }
-  }
+  };
 
-  getDecodedNotes = () : string => {
-    return Utils.decodeHtmlEntities(this.notes);
-  }
+  public getDecodedNotes = () : string => {
+    return UtilsString.decodeHtmlEntities(this.notes);
+  };
+
+  public getTimeInSeconds = () : number => {
+    return this.hours * 60 * 60;
+  };
 
   //returns ex. "2017-02-19T09:00:00.000+0100"
   public getISOStartDate() : string {
@@ -57,6 +61,22 @@ export class HarvestEntry extends JsonSerializable{
 
     //Jira cannot handle Z syntax -> replace it with +0100 timezone
     return isoDateSpentAt.toISOString().replace("Z", "+0100");
-  }
+  };
 
+  /**
+   * This fuzzy comparison is needed as Harvest provides only time in hours with two decimal digits
+   * For example 1 minute will be returned by Harvest as 0.02 hours
+   * We sync it to Jira as 0.02*60*60 = 72 seconds
+   * Jira rounds it down to 1 minute and returns 60 seconds if we query it.
+   * So our comparison must return true in this case comparing 60 to 72 seconds.
+   *
+   * Our tolerance is +- 1 minute to hopefully be fuzzy enough...
+   *
+   * @param jiraTimeInSeconds
+   * @returns {boolean}
+   */
+  public isApproxSameJiraTime = (jiraTimeInSeconds: number) : boolean => {
+    let difference = this.getTimeInSeconds() - jiraTimeInSeconds;
+    return difference < 60 && difference > -60;
+  };
 }

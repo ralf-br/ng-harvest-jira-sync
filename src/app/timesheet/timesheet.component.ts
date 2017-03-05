@@ -8,8 +8,7 @@ import {TimesheetEntry} from "./model/timesheet-entry";
 @Component({
   selector: 'app-timesheet',
   templateUrl: './timesheet.component.html',
-  styleUrls: ['./timesheet.component.css'],
-  providers:[TimesheetService, HarvestService, JiraService]
+  styleUrls: ['./timesheet.component.css']
 })
 export class TimesheetComponent implements OnInit {
 
@@ -19,7 +18,6 @@ export class TimesheetComponent implements OnInit {
   constructor(private timesheetService : TimesheetService) { }
 
   ngOnInit() {
-    this.timesheetService.initTimesheet();
   }
 
   get timesheetEntries(){
@@ -34,8 +32,20 @@ export class TimesheetComponent implements OnInit {
     return this.timesheetService.myJiraIssues;
   }
 
-  private copyHarvestToJira(timesheetEntry : TimesheetEntry){
+  private copyHarvestToJira(timesheetEntry: TimesheetEntry){
     this.timesheetService.copyHarvestToJira(timesheetEntry);
+  }
+
+  private deleteJiraWorklog(timesheetEntry: TimesheetEntry){
+    this.timesheetService.deleteJiraWorklog(timesheetEntry)
+  }
+
+  private trashJiraIcon(event){
+    event.target.attributes['src'].value = "/assets/icons/jira-trash.png";
+  }
+
+  private normalJiraIcon(event){
+    event.target.attributes['src'].value = "/assets/icons/jira.png";
   }
 
 }

@@ -1,0 +1,16 @@
+
+<div class="btn-group" role="group">
+  <button type="button" class="btn btn-default" (click)="previousDay()">
+    <span class="glyphicon glyphicon-step-backward"></span>
+    Previous
+  </button>
+  <button type="button" class="btn btn-default currentDate" title="Go back to today"
+      [disabled]="currentDateIsToday()" (click)="goBackToToday()">
+    <span *ngIf="!currentDateIsToday()">{{currentDate | date:'fullDate'}}</span>
+    <span *ngIf="currentDateIsToday()">Today</span>
+  </button>
+  <button type="button" class="btn btn-default" (click)="nextDay()" [disabled]="nextDisabled()">
+    Next
+    <span class="glyphicon glyphicon-step-forward"></span>
+  </button>
+</div>

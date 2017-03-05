@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  jiraBaseUrl: "https://jira.device-insight.com/"
+  jiraBaseUrl: "https://jira.device-insight.com/",
+  harvestBaseUrl: "https://deviceinsight.harvestapp.com/"
 };

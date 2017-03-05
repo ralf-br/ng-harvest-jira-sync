@@ -11,20 +11,25 @@ import { TimesheetComponent } from './timesheet/timesheet.component';
 import "rxjs/add/operator/finally";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
+import { DatepickerComponent } from './datepicker/datepicker.component';
+import {TimesheetService} from "./timesheet/service/timesheet.service";
+import {HarvestService} from "./timesheet/service/harvest.service";
+import {JiraService} from "./timesheet/service/jira.service";
 
 
 @NgModule({
   declarations: [
     AppComponent,
     AlertComponent,
-    TimesheetComponent
+    TimesheetComponent,
+    DatepickerComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule
   ],
-  providers: [myRequestOptionsProvider, AlertService],
+  providers: [myRequestOptionsProvider, AlertService, TimesheetService, HarvestService, JiraService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
