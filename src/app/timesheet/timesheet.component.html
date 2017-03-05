@@ -6,7 +6,7 @@
         target="_blank">{{entry.getJiraTicket()}}: </a>{{entry.getCommentWithoutJiraTicket()}}
     </td>
     <td>{{entry.getHours()}}h</td>
-    <td>
+    <td class="harvestJiraIcons">
       <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" />
       <span class="harvest-timer" *ngIf="entry.harvestEntry && entry.harvestEntry.timer_started_at">
         <img src="/assets/icons/harvest_timer.gif" />

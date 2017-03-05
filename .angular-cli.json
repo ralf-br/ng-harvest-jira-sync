@@ -9,7 +9,10 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
-        "assets",
+        "assets/icons/*",
+        "assets/bootstrap-3.3.7/fonts/*",
+        "assets/**/*.min.js",
+        "assets/**/*.min.css",
         "favicon.ico",
         "manifest.json"
       ],
