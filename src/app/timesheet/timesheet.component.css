@@ -31,3 +31,9 @@ span.harvest-timer img{
   height: 20px;
   margin: 3px;
 }
+
+button.syncAll{
+  margin-right: 20px;
+  margin-bottom: 20px;
+  float: right;
+}

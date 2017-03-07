@@ -21,13 +21,13 @@ export class DatepickerComponent implements OnInit {
     return this.currentDate.valueOf() == this.todayStartOfDay().valueOf();
   }
 
-  private previousDay(){
-    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.currentDate.getDate() - 1);
+  private pastDay(days : number){
+    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.currentDate.getDate() - days);
     this.updateTimesheet()
   }
 
-  private nextDay(){
-    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.currentDate.getDate() + 1);
+  private futureDay(days : number){
+    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.currentDate.getDate() + days);
     this.updateTimesheet()
   }
 
@@ -40,8 +40,9 @@ export class DatepickerComponent implements OnInit {
     this.timesheetService.initTimesheet(this.currentDate);
   };
 
-  private nextDisabled() : boolean{
-    return this.currentDate.valueOf() >= this.todayStartOfDay().valueOf();
+  private futureDisabled(days : number) : boolean{
+    let futureDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.currentDate.getDate() + days);
+    return this.todayStartOfDay().valueOf() < futureDay.valueOf();
   }
 
   private todayStartOfDay() : Date{

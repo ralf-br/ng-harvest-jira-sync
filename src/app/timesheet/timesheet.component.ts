@@ -1,6 +1,4 @@
 import {Component, OnInit} from "@angular/core";
-import {HarvestService} from "./service/harvest.service";
-import {JiraService} from "./service/jira.service";
 import {environment} from "../../environments/environment";
 import {TimesheetService} from "./service/timesheet.service";
 import {TimesheetEntry} from "./model/timesheet-entry";
@@ -38,6 +36,22 @@ export class TimesheetComponent implements OnInit {
 
   private deleteJiraWorklog(timesheetEntry: TimesheetEntry){
     this.timesheetService.deleteJiraWorklog(timesheetEntry)
+  }
+
+  private multipleJiraSyncsOffered(){
+    return 2 <= this.timesheetEntries
+      .filter(t => t.allowSyncToJira())
+      .length;
+  }
+
+  private anyEntrySyncing(){
+    return 1 <= this.timesheetEntries
+      .filter(t => t.syncing)
+      .length;
+  }
+
+  private copyAllFromHarvestToJira(){
+    this.timesheetService.copyAllFromHarvestToJira();
   }
 
   private trashJiraIcon(event){

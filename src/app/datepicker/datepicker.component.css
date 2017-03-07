@@ -1,8 +1,12 @@
 .btn-group{
   margin-bottom: 10px;
-  margin-left: 150px;
+  margin-left: 50px;
 }
 
-.currentDate{
+button.currentDate{
   width: 250px;
+}
+
+button.day{
+  width: 100px;
 }

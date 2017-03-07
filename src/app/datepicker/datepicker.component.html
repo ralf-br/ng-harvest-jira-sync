@@ -1,16 +1,28 @@
 
 <div class="btn-group" role="group">
-  <button type="button" class="btn btn-default" (click)="previousDay()">
-    <span class="glyphicon glyphicon-step-backward"></span>
-    Previous
+  <button type="button" class="btn btn-default" (click)="pastDay(7)" title="1 week back">
+    <span class="glyphicon glyphicon-fast-backward"></span>
+    Week
   </button>
+
+  <button type="button" class="btn btn-default day" (click)="pastDay(1)" title="1 day back">
+    <span class="glyphicon glyphicon-step-backward"></span>
+    Day
+  </button>
+
   <button type="button" class="btn btn-default currentDate" title="Go back to today"
       [disabled]="currentDateIsToday()" (click)="goBackToToday()">
     <span *ngIf="!currentDateIsToday()">{{currentDate | date:'fullDate'}}</span>
     <span *ngIf="currentDateIsToday()">Today</span>
   </button>
-  <button type="button" class="btn btn-default" (click)="nextDay()" [disabled]="nextDisabled()">
-    Next
+
+  <button type="button" class="btn btn-default day" (click)="futureDay(1)" [disabled]="futureDisabled(1)" title="1 day forward">
+    Day
     <span class="glyphicon glyphicon-step-forward"></span>
+  </button>
+
+  <button type="button" class="btn btn-default" (click)="futureDay(7)" [disabled]="futureDisabled(7)" title="1 week forward">
+    Week
+    <span class="glyphicon glyphicon glyphicon-fast-forward"></span>
   </button>
 </div>

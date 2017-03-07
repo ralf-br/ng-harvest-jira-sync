@@ -80,6 +80,24 @@ export class TimesheetService {
       );
   }
 
+  public copyAllFromHarvestToJira(){
+    let entriesToSync = this.timesheetEntries.filter(t => t.allowSyncToJira());
+    entriesToSync.forEach(t => t.syncing = true);
+
+    Observable.forkJoin(
+      entriesToSync.map(t => this.jiraService.copyHarvestToJira(t))
+    )
+      .finally(() => entriesToSync.forEach(t => t.syncing = false))
+      .subscribe(
+        resultArray => {
+          Stream.from(resultArray)
+            .forEach(this.mergeMyJiraWorklogIntoTimesheet)
+            .then(() => this.alertService.success("Created JIRA worklogs for: " + entriesToSync.map(t => t.getJiraTicket()).join(", ")));
+        },
+        error => this.alertService.error("Cannot save to JIRA - does the ticket nr exist?", error)
+    );
+  }
+
   private loadMyJiraWorklogsForIssues = (date: Date) => {
     Stream.from(this.myJiraIssues)
       .map(issue => this.jiraService.loadWorklogsForTicket(issue))

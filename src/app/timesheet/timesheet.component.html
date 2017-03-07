@@ -17,7 +17,7 @@
         (click)="deleteJiraWorklog(entry)" title="Delete JIRA worklog on click!"/>
 
       <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="copyHarvestToJira(entry)"
-          type="button" class="btn btn-default" aria-label="Left Align">
+          type="button" class="btn btn-default">
 
         <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
         Sync to {{entry.harvestEntry.getJiraTicket()}}
@@ -26,4 +26,11 @@
     </td>
   </tr>
 </table>
-<br/>
+
+
+<button *ngIf="multipleJiraSyncsOffered()" [disabled]="anyEntrySyncing()" (click)="copyAllFromHarvestToJira()"
+  type="button" class="btn btn-default syncAll">
+
+  <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+  Sync all above Harvest Entries to Jira
+</button>
