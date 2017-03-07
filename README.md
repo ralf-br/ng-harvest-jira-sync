@@ -18,6 +18,31 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
   - select the `/dist` folder (after calling `ng build`)
   - for reloading the plugin after code changes just call `ng build` - chrome automatically detects changes
 
+## Build release package
+- set release version in manifest.json
+  - first digit - x: major release
+  - second digit - y: feature release
+  - third digit - z: bug fix release
+  - firth digit: NOT used. Only set while development to "999" meaning "-SNAPSHOPT"
+- `ng build`
+- make relevant updates in releases/descriptions and releases/screenshots
+  - screenshot needs to be 1280x800px .png
+  - scale smaller screenshot via gimp to 1280px width
+- `cd dist`
+- `zip -r ../releases/ng-harvest-jira-sync-x_y_z.zip *`
+- commit to development branch / release branch
+- tag with new version
+- push commit & tag
+- merge into master branch
+- upload zip file via https://chrome.google.com/webstore/developer/dashboard
+  - update description and screenshot if relevant
+- change version in development to next feature release version plus .999 
+
+
+####################################
+## the following is NOT RELEVANT
+####################################
+
 ## Development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
