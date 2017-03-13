@@ -76,7 +76,7 @@ export class TimesheetService {
           timesheetEntry.jiraWorklog = jiraWorklog;
           this.alertService.success("Created JIRA worklog for " + timesheetEntry.harvestEntry.getJiraTicket());
         },
-        error => this.alertService.error("Cannot save to JIRA - does the ticket nr exist?", error)
+        error => this.alertService.error("Cannot save to JIRA", error)
       );
   }
 
@@ -94,7 +94,7 @@ export class TimesheetService {
             .forEach(this.mergeMyJiraWorklogIntoTimesheet)
             .then(() => this.alertService.success("Created JIRA worklogs for: " + entriesToSync.map(t => t.getJiraTicket()).join(", ")));
         },
-        error => this.alertService.error("Cannot save to JIRA - does the ticket nr exist?", error)
+        error => this.alertService.error("Cannot save to JIRA", error)
     );
   }
 

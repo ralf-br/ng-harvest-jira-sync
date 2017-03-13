@@ -5,4 +5,5 @@ p{
 .alertDetails{
   font-size: smaller;
   display: block;
+  white-space: pre-line;
 }

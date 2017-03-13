@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {Response} from "@angular/http";
 
 @Injectable()
 export class AlertService {
@@ -8,18 +9,32 @@ export class AlertService {
 
   constructor() { }
 
-  public error(errorText : string, concreteErrorToLog? : any){
-    this.alertTextDetail = null;
-    if(concreteErrorToLog.status == 0){
-      this.alertTextDetail = "Could not resolve host or chrome permission is missing. Are you online?";
-    } else if(concreteErrorToLog.status == 404){
-      this.alertTextDetail = "The http error code is 404. Is this url correct? '" + concreteErrorToLog.url + "' ?";
-    } else if(concreteErrorToLog.status == 401){
-      this.alertTextDetail = "The http error code is 401. Are you logged in and authorized to query '" + concreteErrorToLog.url + "' ?";
-    }
-
+  public error(errorText : string, concreteErrorToLog? : Response){
     this.alertText = errorText;
     this.alertStatus = "alert-danger";
+
+    if(concreteErrorToLog){
+      this.alertTextDetail = "";
+
+      if(concreteErrorToLog.headers.get("content-type") == "text/html; charset=utf-8"){
+        //Harvest returns the message as plain Text in body
+        this.alertTextDetail += "Error Message: " + concreteErrorToLog.text() + "\n";
+      } else if (concreteErrorToLog.headers.get("content-type") == "application/json;charset=UTF-8") {
+        //Jira wraps the message in the errorMessages property of a json object
+        this.alertTextDetail += "Error Message: " +  concreteErrorToLog.json().errorMessages + "\n";
+      }
+
+      if(concreteErrorToLog.status == 0){
+        this.alertTextDetail += "Could not resolve host or chrome permission is missing. Are you online?";
+      } else if(concreteErrorToLog.status == 400){
+        this.alertTextDetail += "The Http Status was 400 Bad Request for the url '" + concreteErrorToLog.url + "'";
+      } else if(concreteErrorToLog.status == 404){
+        this.alertTextDetail += "The Http Status was 404 Not Found. Is this url correct? '" + concreteErrorToLog.url + "' ?";
+      } else if(concreteErrorToLog.status == 401){
+        this.alertTextDetail += "The Http Status was 401 Unauthorized. Are you logged in to query '" + concreteErrorToLog.url + "' ?";
+      }
+    }
+
     console.error(this.alertStatus + ": " + this.alertText + this.alertTextDetail, concreteErrorToLog);
   }
 
