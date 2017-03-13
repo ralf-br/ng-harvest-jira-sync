@@ -20,11 +20,26 @@ export class TimesheetService {
   public myJiraAccount: JiraAccount = new JiraAccount();
   public myJiraIssues: JiraIssue[] = [];
 
+  private currentDate: Date;
+
   constructor(private harvestService : HarvestService,
               private jiraService : JiraService,
               private alertService : AlertService) { }
 
-  public initTimesheet(date : Date) {
+
+
+  public clearAlertAndInitTimesheet(date : Date) {
+    this.alertService.clear();
+    this.initTimesheet(date)
+  }
+
+  private loadTimesheetForCurrentDateAndPreserveLastError = () => {
+    this.initTimesheet(this.currentDate)
+  };
+
+  private initTimesheet(date : Date) {
+    this.currentDate = date;
+
     console.log("Try loading from JIRA and Harvest for: " + UtilsDate.getDateInFormatYYYYMMDD(date));
     Observable.forkJoin(
       this.jiraService.loadMyJiraAccount(),
@@ -94,7 +109,10 @@ export class TimesheetService {
             .forEach(this.mergeMyJiraWorklogIntoTimesheet)
             .then(() => this.alertService.success("Created JIRA worklogs for: " + entriesToSync.map(t => t.getJiraTicket()).join(", ")));
         },
-        error => this.alertService.error("Cannot save to JIRA", error)
+        error => {
+          this.alertService.error("Cannot save to JIRA", error);
+          UtilsDate.delay(200).then(this.loadTimesheetForCurrentDateAndPreserveLastError);
+        }
     );
   }
 
@@ -142,7 +160,6 @@ export class TimesheetService {
       this.alertService.info("No entries found in Harvest today");
     } else {
       console.log(harvestEntries.length + " entries found in Harvest");
-      this.alertService.clear();
     }
 
     Stream.from(harvestEntries)

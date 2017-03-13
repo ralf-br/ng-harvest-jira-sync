@@ -44,4 +44,8 @@ export module UtilsDate {
     return ((year % 100) != 0 || (year % 400) == 0);
   }
 
+  export function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 }

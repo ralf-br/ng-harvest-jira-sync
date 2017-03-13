@@ -37,7 +37,7 @@ export class DatepickerComponent implements OnInit {
   }
 
   private updateTimesheet(){
-    this.timesheetService.initTimesheet(this.currentDate);
+    this.timesheetService.clearAlertAndInitTimesheet(this.currentDate);
   };
 
   private futureDisabled(days : number) : boolean{
