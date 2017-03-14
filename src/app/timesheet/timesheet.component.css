@@ -1,5 +1,5 @@
 table {
-  min-width: 700px;
+  min-width: 750px;
 }
 
 table img{
@@ -15,10 +15,6 @@ table td.comment{
   white-space: pre-line;
 }
 
-table td.harvestJiraIcons{
-  white-space: nowrap;
-}
-
 span.harvest-timer{
   background: #f78e2b;
   border: 1px solid transparent;
@@ -30,10 +26,4 @@ span.harvest-timer img{
   width: 20px;
   height: 20px;
   margin: 3px;
-}
-
-button.syncAll{
-  margin-right: 20px;
-  margin-bottom: 20px;
-  float: right;
 }

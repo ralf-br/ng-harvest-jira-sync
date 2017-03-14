@@ -1,5 +1,6 @@
 import {HarvestEntry} from "./harvest-entry";
 import {JiraWorklog} from "./jira-worklog";
+import {UtilsJira} from "../../utils/UtilsJira";
 export class TimesheetEntry {
 
   harvestEntry : HarvestEntry;
@@ -14,13 +15,15 @@ export class TimesheetEntry {
     }
   }
 
-  public getHours = () : number => {
-    if(this.harvestEntry != null){
-      return this.harvestEntry.hours;
-    } else {
-      return this.jiraWorklog.timeSpentSeconds / 60 / 60;
-    }
-  }
+  public getTimeSpentInSeconds = () : number => {
+    return this.harvestEntry ?
+      this.harvestEntry.getTimeInSeconds() :
+      this.jiraWorklog.timeSpentSeconds;
+  };
+
+  public getTimeSpentString = () : string => {
+    return UtilsJira.timeInJiraFormat(this.getTimeSpentInSeconds());
+  };
 
   public hasJiraTicket = () : boolean => {
     return (this.harvestEntry != null && this.harvestEntry.hasJiraTicket()) || this.jiraWorklog != null;

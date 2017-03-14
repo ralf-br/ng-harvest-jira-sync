@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {environment} from "../../environments/environment";
 import {TimesheetService} from "./service/timesheet.service";
 import {TimesheetEntry} from "./model/timesheet-entry";
+import {UtilsJira} from "../utils/UtilsJira";
 
 @Component({
   selector: 'app-timesheet',
@@ -60,6 +61,14 @@ export class TimesheetComponent implements OnInit {
 
   private normalJiraIcon(event){
     event.target.attributes['src'].value = "/assets/icons/jira.png";
+  }
+
+  private totalTimeSpentString(): string {
+    let totalTimeSpentInSeconds = this.timesheetEntries
+      .map(timesheetEntry => timesheetEntry.getTimeSpentInSeconds())
+      .reduce((acc, val) => acc + val, 0);
+
+    return UtilsJira.timeInJiraFormat(totalTimeSpentInSeconds);
   }
 
 }

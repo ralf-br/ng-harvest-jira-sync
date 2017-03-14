@@ -28,8 +28,7 @@ export module UtilsString {
   export function formatString(source : string, replacements : any) : string{
     jQuery.each(replacements,function (i, n) {
       source = source.replace(new RegExp("\\{" + i + "\\}", "g"), n);
-    })
+    });
     return source;
   }
-
 }

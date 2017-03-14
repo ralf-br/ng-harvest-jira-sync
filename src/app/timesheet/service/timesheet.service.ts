@@ -136,12 +136,12 @@ export class TimesheetService {
   };
 
   private mergeMyJiraWorklogIntoTimesheet = (jiraWorklog: JiraWorklog) => {
-    console.log("Found JIRA worklog entry " + jiraWorklog.issueKey + ": " + jiraWorklog.comment + " => let's merge it into the timesheet!")
+    console.log("Found JIRA worklog entry " + jiraWorklog.issueKey + ": " + jiraWorklog.comment + " => let's merge it into the timesheet!");
     Stream.from(this.timesheetEntries)
       .filter(timesheetEntry => timesheetEntry.harvestEntry != null)
       .filter(timesheetEntry => timesheetEntry.harvestEntry.hasJiraTicket())
       .filter(timesheetEntry => timesheetEntry.harvestEntry.getJiraTicket() == jiraWorklog.issueKey)
-      .filter(timesheetEntry => timesheetEntry.harvestEntry.isApproxSameJiraTime(jiraWorklog.timeSpentSeconds))
+      .filter(timesheetEntry => timesheetEntry.harvestEntry.getTimeInSeconds() == jiraWorklog.timeSpentSeconds)
       .filter(timesheetEntry => timesheetEntry.harvestEntry.getCommentWithoutJiraTicket() == jiraWorklog.comment)
       .toArray()
       .then(matchingTimesheetArray => {

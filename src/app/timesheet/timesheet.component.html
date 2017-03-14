@@ -1,14 +1,13 @@
 <table class="table">
   <tr *ngFor="let entry of timesheetEntries">
-    <td class="comment">
-      <a *ngIf="entry.hasJiraTicket()"
+    <td class="comment"><a *ngIf="entry.hasJiraTicket()"
         href="{{jiraBaseUrl}}browse/{{entry.getJiraTicket()}}?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
         target="_blank">{{entry.getJiraTicket()}}: </a>{{entry.getCommentWithoutJiraTicket()}}
     </td>
-    <td>{{entry.getHours()}}h</td>
-    <td class="harvestJiraIcons">
+    <td class="text-nowrap">{{entry.getTimeSpentString()}}</td>
+    <td class="text-nowrap">
       <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" />
-      <span class="harvest-timer" *ngIf="entry.harvestEntry && entry.harvestEntry.timer_started_at">
+      <span class="harvest-timer" *ngIf="entry.harvestEntry?.timer_started_at">
         <img src="/assets/icons/harvest_timer.gif" />
       </span>
 
@@ -25,12 +24,16 @@
       </button>
     </td>
   </tr>
+  <tr class="text-muted lead" *ngIf="timesheetEntries.length >= 2">
+    <td class="text-right">Total</td>
+    <td class="text-nowrap">{{totalTimeSpentString()}}</td>
+    <td class="text-nowrap">
+      <button *ngIf="multipleJiraSyncsOffered()" [disabled]="anyEntrySyncing()" (click)="copyAllFromHarvestToJira()"
+        type="button" class="btn btn-default">
+
+        <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+        Sync all above to Jira
+      </button>
+    </td>
+  </tr>
 </table>
-
-
-<button *ngIf="multipleJiraSyncsOffered()" [disabled]="anyEntrySyncing()" (click)="copyAllFromHarvestToJira()"
-  type="button" class="btn btn-default syncAll">
-
-  <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-  Sync all above Harvest Entries to Jira
-</button>
