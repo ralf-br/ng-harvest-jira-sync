@@ -16,12 +16,15 @@ export class AlertService {
     if(concreteErrorToLog){
       this.alertTextDetail = "";
 
-      if(concreteErrorToLog.headers.get("content-type") == "text/html; charset=utf-8"){
+      if(concreteErrorToLog.headers.get("content-type") == "text/html; charset=utf-8"
+        && concreteErrorToLog.text()) {
         //Harvest returns the message as plain Text in body
         this.alertTextDetail += "Error Message: " + concreteErrorToLog.text() + "\n";
-      } else if (concreteErrorToLog.headers.get("content-type") == "application/json;charset=UTF-8") {
+
+      } else if (concreteErrorToLog.headers.get("content-type") == "application/json;charset=UTF-8"
+        && concreteErrorToLog.json().errorMessages) {
         //Jira wraps the message in the errorMessages property of a json object
-        this.alertTextDetail += "Error Message: " +  concreteErrorToLog.json().errorMessages + "\n";
+          this.alertTextDetail += "Error Message: " +  concreteErrorToLog.json().errorMessages + "\n";
       }
 
       if(concreteErrorToLog.status == 0){

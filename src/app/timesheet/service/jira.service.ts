@@ -21,25 +21,15 @@ export class JiraService {
 
   constructor(private http:Http) { }
 
-  public loadMyIssuesWithWorklog(date : Date) : Observable<JiraIssue[]> {
-    let jiraSearchUrl = UtilsString.formatString(this.jiraSearchWorklog, [UtilsDate.getDateInFormatYYYYMMDD(date)])
-    return this.http.get(jiraSearchUrl, { withCredentials: true })
-      .map(response => response.json().issues);
-  }
-
   public loadMyJiraAccount() : Observable<JiraAccount> {
     return this.http.get(this.jiraMyselfUrl, { withCredentials: true })
       .map(response => response.json())
       .map(json => new JiraAccount(json));
   }
 
-  public loadWorklogsForTicket(issue : JiraIssue) : Observable<JiraWorklog[]> {
-    let getWorklogUrl = this.jiraIssueUrl + issue.id + this.jiraWorklog;
-
-    return this.http.get(getWorklogUrl, { withCredentials: true })
-      .map(response => <JiraWorklog[]> response.json().worklogs)
-      .map(worklogs => {worklogs.forEach(worklog => worklog.issueKey = issue.key); return worklogs; }
-      )
+  public loadMyJiraWorklogs(date: Date) : Observable<JiraWorklog[][]> {
+    return this.loadMyIssuesWithWorklog(date)
+      .flatMap(issues => this.loadMyJiraWorklogsForIssues(date, issues))
   }
 
   public deleteWorklog(worklog : JiraWorklog) : Observable<Response> {
@@ -63,5 +53,31 @@ export class JiraService {
         worklog.issueKey = timesheetEntry.getJiraTicket();
         return worklog;
       });
+  }
+
+  private loadMyIssuesWithWorklog(date : Date) : Observable<JiraIssue[]> {
+    let jiraSearchUrl = UtilsString.formatString(this.jiraSearchWorklog, [UtilsDate.getDateInFormatYYYYMMDD(date)])
+    return this.http.get(jiraSearchUrl, { withCredentials: true })
+      .map(response => response.json().issues);
+  }
+
+  private loadMyJiraWorklogsForIssues = (date: Date, myJiraIssues: JiraIssue[]) : Observable<JiraWorklog[][]> => {
+    let loadWorklogsForIssueObservables = myJiraIssues
+      .map(issue => this.loadWorklogsForIssue(issue));
+
+    if(loadWorklogsForIssueObservables.length > 0){
+      return Observable.forkJoin(loadWorklogsForIssueObservables);
+    } else {
+      return Observable.of([]);
+    }
+  };
+
+  private loadWorklogsForIssue(issue : JiraIssue) : Observable<JiraWorklog[]> {
+    let getWorklogUrl = this.jiraIssueUrl + issue.id + this.jiraWorklog;
+
+    return this.http.get(getWorklogUrl, { withCredentials: true })
+      .map(response => <JiraWorklog[]> response.json().worklogs)
+      .map(worklogs => {worklogs.forEach(worklog => worklog.issueKey = issue.key); return worklogs; }
+      )
   }
 }

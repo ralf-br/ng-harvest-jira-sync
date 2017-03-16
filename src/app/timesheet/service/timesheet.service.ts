@@ -8,7 +8,6 @@ import {JiraService} from "./jira.service";
 import {JiraWorklog} from "../model/jira-worklog";
 import {JiraAccount} from "../model/jira-account";
 import {Observable} from "rxjs";
-import {JiraIssue} from "../model/jira-issue";
 import {UtilsDate} from "../../utils/UtilsDate";
 import {UtilsJira} from "../../utils/UtilsJira";
 import {SpinnerService} from "../../spinner/spinner.service";
@@ -19,7 +18,6 @@ export class TimesheetService {
 
   public timesheetEntries: TimesheetEntry[] = [];
   public myJiraAccount: JiraAccount = new JiraAccount();
-  public myJiraIssues: JiraIssue[] = [];
 
   private currentDate: Date;
 
@@ -28,45 +26,9 @@ export class TimesheetService {
               private alertService : AlertService,
               private spinnerService : SpinnerService) { }
 
-
-
   public clearAlertAndInitTimesheet(date : Date) {
     this.alertService.clear();
     this.initTimesheet(date)
-  }
-
-  private loadTimesheetForCurrentDateAndPreserveLastError = () => {
-    this.initTimesheet(this.currentDate)
-  };
-
-  private initTimesheet(date : Date) {
-    this.currentDate = date;
-
-    this.spinnerService.startSpinning();
-
-    console.info("Try loading from JIRA and Harvest for: " + UtilsDate.getDateInFormatYYYYMMDD(date));
-    Observable.forkJoin(
-      this.jiraService.loadMyJiraAccount(),
-      this.harvestService.loadHarvestEntries(date),
-      this.jiraService.loadMyIssuesWithWorklog(date)
-    ).subscribe(
-      resultArray => {
-        this.myJiraAccount = resultArray[0];
-        console.debug("Got JIRA Account with key " + this.myJiraAccount.key);
-
-        Stream.from(resultArray[1].day_entries)
-          .map(json => new HarvestEntry(json))
-          .toArray()
-          .then(this.processHarvestEntries);
-
-        this.myJiraIssues = resultArray[2];
-      },
-      error => {
-        this.alertService.error("I'm not able to connect to JIRA or Harvest.", error);
-        this.spinnerService.stopSpinning();
-      },
-      () => this.loadMyJiraWorklogsForIssues(date)
-    )
   }
 
   public deleteJiraWorklog(timesheetEntry: TimesheetEntry){
@@ -128,22 +90,48 @@ export class TimesheetService {
       );
   }
 
-  private loadMyJiraWorklogsForIssues = (date: Date) => {
-    Stream.from(this.myJiraIssues)
-      .map(issue => this.jiraService.loadWorklogsForTicket(issue))
-      .toArray()
-      .then(loadWorklogsForTicketObservables =>
-        Observable.forkJoin(loadWorklogsForTicketObservables)
-          .finally(this.spinnerService.stopSpinning)
-          .subscribe(
-            resultArray => Stream.from(resultArray)
-              .forEach(jiraWorklogs => this.processJiraWorklogs(jiraWorklogs, date)),
-            error => this.alertService.error("Could not get your worklogs from JIRA", error)
-          ))
+  private loadTimesheetForCurrentDateAndPreserveLastError = () => {
+    this.initTimesheet(this.currentDate)
   };
 
-  private processJiraWorklogs = (jiraWorklogs: JiraWorklog[], date : Date) => {
-    Stream.from(jiraWorklogs)
+  private initTimesheet(date : Date) {
+    this.currentDate = date;
+
+    this.spinnerService.startSpinning();
+
+    console.info("Try loading from JIRA and Harvest for: " + UtilsDate.getDateInFormatYYYYMMDD(date));
+    Observable.forkJoin(
+      this.jiraService.loadMyJiraAccount(),
+      this.harvestService.loadHarvestEntries(date),
+      this.jiraService.loadMyJiraWorklogs(date)
+
+    )
+      .finally(this.spinnerService.stopSpinning)
+      .subscribe(
+        resultArray => {
+          this.addMyJiraAccount(resultArray[0]);
+          this.processHarvestEntries(resultArray[1]);
+          this.processJiraWorklogs(resultArray[2], date);
+        },
+        error => this.alertService.error("I'm not able to connect to JIRA or Harvest.", error)
+      )
+  }
+
+  private processHarvestEntries = (harvestEntries: HarvestEntry[]) => {
+    if(!harvestEntries || harvestEntries.length == 0){
+      this.alertService.info("No entries found in Harvest today");
+    } else {
+      console.info(harvestEntries.length + " entries found in Harvest");
+    }
+
+    this.timesheetEntries = harvestEntries.map(harvestEntry => new TimesheetEntry(harvestEntry));
+  };
+
+  private processJiraWorklogs = (jiraWorklogs: JiraWorklog[][], date : Date) => {
+    //array of jira issues[] and their worklogs[] flattend to only worklogs[]
+    let flattendJiraWorklogs : JiraWorklog[] = jiraWorklogs.reduce((a1, a2) => a1.concat(a2), []);
+
+    flattendJiraWorklogs
       .filter(jiraWorklog => jiraWorklog.author.key == this.myJiraAccount.key)
       .filter(jiraWorklog => UtilsJira.hasStartedOnDate(jiraWorklog.started, date))
       .forEach(this.mergeMyJiraWorklogIntoTimesheet);
@@ -169,17 +157,8 @@ export class TimesheetService {
       });
   };
 
-  private processHarvestEntries = (harvestEntries: HarvestEntry[]) => {
-    if(!harvestEntries || harvestEntries.length == 0){
-      this.alertService.info("No entries found in Harvest today");
-    } else {
-      console.info(harvestEntries.length + " entries found in Harvest");
-    }
-
-    Stream.from(harvestEntries)
-      .map(harvestEntry => new TimesheetEntry(harvestEntry))
-      .toArray()
-      .then(timesheetEntries => this.timesheetEntries = timesheetEntries);
-  };
-
+  private addMyJiraAccount(jiraAccount: JiraAccount) {
+    console.debug("Got JIRA Account with key " + jiraAccount.key);
+    this.myJiraAccount = jiraAccount;
+  }
 }
