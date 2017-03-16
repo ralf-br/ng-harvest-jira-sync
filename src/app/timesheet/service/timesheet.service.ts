@@ -11,6 +11,7 @@ import {Observable} from "rxjs";
 import {JiraIssue} from "../model/jira-issue";
 import {UtilsDate} from "../../utils/UtilsDate";
 import {UtilsJira} from "../../utils/UtilsJira";
+import {SpinnerService} from "../../spinner/spinner.service";
 
 
 @Injectable()
@@ -24,7 +25,8 @@ export class TimesheetService {
 
   constructor(private harvestService : HarvestService,
               private jiraService : JiraService,
-              private alertService : AlertService) { }
+              private alertService : AlertService,
+              private spinnerService : SpinnerService) { }
 
 
 
@@ -40,7 +42,9 @@ export class TimesheetService {
   private initTimesheet(date : Date) {
     this.currentDate = date;
 
-    console.log("Try loading from JIRA and Harvest for: " + UtilsDate.getDateInFormatYYYYMMDD(date));
+    this.spinnerService.startSpinning();
+
+    console.info("Try loading from JIRA and Harvest for: " + UtilsDate.getDateInFormatYYYYMMDD(date));
     Observable.forkJoin(
       this.jiraService.loadMyJiraAccount(),
       this.harvestService.loadHarvestEntries(date),
@@ -48,7 +52,7 @@ export class TimesheetService {
     ).subscribe(
       resultArray => {
         this.myJiraAccount = resultArray[0];
-        console.log("Got JIRA Account with key " + this.myJiraAccount.key);
+        console.debug("Got JIRA Account with key " + this.myJiraAccount.key);
 
         Stream.from(resultArray[1].day_entries)
           .map(json => new HarvestEntry(json))
@@ -57,7 +61,10 @@ export class TimesheetService {
 
         this.myJiraIssues = resultArray[2];
       },
-      error => this.alertService.error("I'm not able to connect to JIRA or Harvest.", error),
+      error => {
+        this.alertService.error("I'm not able to connect to JIRA or Harvest.", error);
+        this.spinnerService.stopSpinning();
+      },
       () => this.loadMyJiraWorklogsForIssues(date)
     )
   }
@@ -98,34 +105,41 @@ export class TimesheetService {
   public copyAllFromHarvestToJira(){
     let entriesToSync = this.timesheetEntries.filter(t => t.allowSyncToJira());
     entriesToSync.forEach(t => t.syncing = true);
+    this.spinnerService.startSpinning();
 
-    Observable.forkJoin(
-      entriesToSync.map(t => this.jiraService.copyHarvestToJira(t))
+    //We use Observable.concat to sync to JIRA all entries sequentially!
+    //Observable.forkJoin also worked fine for fast parallel access BUT
+    //JIRA had transaction problems with multiple parallel entries to the same ticket
+    //not summing up correctly the total time spend!!
+    Observable.concat(
+      ...entriesToSync.map(t => this.jiraService.copyHarvestToJira(t))
     )
-      .finally(() => entriesToSync.forEach(t => t.syncing = false))
+      .finally(() => {
+        entriesToSync.forEach(t => t.syncing = false);
+        this.spinnerService.stopSpinning();
+      })
       .subscribe(
-        resultArray => {
-          Stream.from(resultArray)
-            .forEach(this.mergeMyJiraWorklogIntoTimesheet)
-            .then(() => this.alertService.success("Created JIRA worklogs for: " + entriesToSync.map(t => t.getJiraTicket()).join(", ")));
-        },
+        newJiraWorklog => this.mergeMyJiraWorklogIntoTimesheet(newJiraWorklog),
         error => {
           this.alertService.error("Cannot save to JIRA", error);
           UtilsDate.delay(200).then(this.loadTimesheetForCurrentDateAndPreserveLastError);
-        }
-    );
+        },
+        () => this.alertService.success("Created JIRA worklogs for: " + entriesToSync.map(t => t.getJiraTicket()).join(", "))
+      );
   }
 
   private loadMyJiraWorklogsForIssues = (date: Date) => {
     Stream.from(this.myJiraIssues)
       .map(issue => this.jiraService.loadWorklogsForTicket(issue))
       .toArray()
-      .then(loadWorklogsForTicketObservables => Observable.forkJoin(loadWorklogsForTicketObservables)
-        .subscribe(
-          resultArray => Stream.from(resultArray)
-            .forEach(jiraWorklogs => this.processJiraWorklogs(jiraWorklogs, date)),
-          error => this.alertService.error("Could not get your worklogs from JIRA", error)
-      ))
+      .then(loadWorklogsForTicketObservables =>
+        Observable.forkJoin(loadWorklogsForTicketObservables)
+          .finally(this.spinnerService.stopSpinning)
+          .subscribe(
+            resultArray => Stream.from(resultArray)
+              .forEach(jiraWorklogs => this.processJiraWorklogs(jiraWorklogs, date)),
+            error => this.alertService.error("Could not get your worklogs from JIRA", error)
+          ))
   };
 
   private processJiraWorklogs = (jiraWorklogs: JiraWorklog[], date : Date) => {
@@ -136,7 +150,7 @@ export class TimesheetService {
   };
 
   private mergeMyJiraWorklogIntoTimesheet = (jiraWorklog: JiraWorklog) => {
-    console.log("Found JIRA worklog entry " + jiraWorklog.issueKey + ": " + jiraWorklog.comment + " => let's merge it into the timesheet!");
+    console.debug("Search match for JIRA worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.comment + "'");
     Stream.from(this.timesheetEntries)
       .filter(timesheetEntry => timesheetEntry.harvestEntry != null)
       .filter(timesheetEntry => timesheetEntry.harvestEntry.hasJiraTicket())
@@ -146,10 +160,10 @@ export class TimesheetService {
       .toArray()
       .then(matchingTimesheetArray => {
         if(matchingTimesheetArray.length >= 1){
-          console.log("Match found - adding to existing TimesheetEntry with JIRA Worklog " + jiraWorklog.issueKey + ": " + jiraWorklog.comment);
+          console.debug("Match found - adding to existing TimesheetEntry with JIRA Worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.comment + "'");
           matchingTimesheetArray[0].jiraWorklog = jiraWorklog;
         } else {
-          console.log("No matches found - adding new TimesheetEntry with JIRA Worklog " + jiraWorklog.issueKey + ": " + jiraWorklog.comment);
+          console.debug("No matches found - adding new TimesheetEntry with JIRA Worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.comment + "'");
           this.timesheetEntries.push(new TimesheetEntry(null, jiraWorklog));
         }
       });
@@ -159,7 +173,7 @@ export class TimesheetService {
     if(!harvestEntries || harvestEntries.length == 0){
       this.alertService.info("No entries found in Harvest today");
     } else {
-      console.log(harvestEntries.length + " entries found in Harvest");
+      console.info(harvestEntries.length + " entries found in Harvest");
     }
 
     Stream.from(harvestEntries)

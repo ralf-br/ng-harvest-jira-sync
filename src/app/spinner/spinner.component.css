@@ -1,0 +1,9 @@
+div{
+  position: fixed;
+  left: 45%;
+  top: 60px;
+}
+
+div img{
+  width: 50px;
+}

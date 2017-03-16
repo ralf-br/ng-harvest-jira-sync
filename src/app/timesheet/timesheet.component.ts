@@ -27,10 +27,6 @@ export class TimesheetComponent implements OnInit {
     return this.timesheetService.myJiraAccount;
   }
 
-  get myJiraIssues(){
-    return this.timesheetService.myJiraIssues;
-  }
-
   private copyHarvestToJira(timesheetEntry: TimesheetEntry){
     this.timesheetService.copyHarvestToJira(timesheetEntry);
   }
