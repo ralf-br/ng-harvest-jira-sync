@@ -3,7 +3,7 @@
 
   "name": "Harvest -> JIRA Sync",
   "description": "Compares your Harvest & JIRA Worklog Entries. You can one-click-sync Harvest to JIRA & delete JIRA entries.",
-  "version": "0.3.0",
+  "version": "0.4.0.999",
 
   "icons":{
     "16": "assets/icons/icon16.png",
