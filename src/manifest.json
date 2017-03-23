@@ -17,6 +17,11 @@
     "default_popup": "index.html"
   },
 
+  "options_ui": {
+    "page": "index.html?options",
+    "chrome_style": true
+  },
+
   "permissions": [
     "https://deviceinsight.harvestapp.com/daily",
     "https://jira.device-insight.com/rest/api/2/"
