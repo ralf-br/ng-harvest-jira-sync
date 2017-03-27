@@ -8,7 +8,7 @@ import {HarvestService} from "../timesheet/service/harvest.service";
   selector: 'app-main-sync-overview',
   templateUrl: './main-sync-overview.component.html',
   styleUrls: ['./main-sync-overview.component.css'],
-  providers: [SpinnerService, TimesheetService, HarvestService, JiraService]
+  providers: [SpinnerService, TimesheetService]
 })
 export class MainSyncOverviewComponent implements OnInit {
 

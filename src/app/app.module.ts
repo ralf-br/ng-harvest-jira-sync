@@ -18,6 +18,8 @@ import {AppRoutingModule} from "./app-routing.module";
 import {MainSyncOverviewComponent} from "./main-sync-overview/main-sync-overview.component";
 import {OptionsComponent} from "./options/options.component";
 import {OptionsService} from "./options/options.service";
+import {HarvestService} from "./timesheet/service/harvest.service";
+import {JiraService} from "./timesheet/service/jira.service";
 
 
 @NgModule({
@@ -36,7 +38,7 @@ import {OptionsService} from "./options/options.service";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [myRequestOptionsProvider, AlertService, OptionsService],
+  providers: [myRequestOptionsProvider, AlertService, OptionsService, HarvestService, JiraService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -2,6 +2,10 @@ p{
   width: 400px;
 }
 
+.alert{
+  white-space: pre-line;
+}
+
 .alertDetails{
   font-size: smaller;
   display: block;

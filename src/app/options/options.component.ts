@@ -1,7 +1,7 @@
-import {ApplicationRef, ChangeDetectorRef, Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {AlertService} from "../alert/alert.service";
 import {environment} from "../../environments/environment";
-import {NgForm} from "@angular/forms";
+import {OptionsService} from "./options.service";
 
 @Component({
   selector: 'app-options',
@@ -21,8 +21,7 @@ export class OptionsComponent implements OnInit {
   @ViewChild('myForm') myForm;
 
   constructor(private alertService : AlertService,
-              private changeLocal: ChangeDetectorRef,
-              private changeGlobal: ApplicationRef,
+              private optionsService : OptionsService,
               private zone: NgZone) { }
 
   ngOnInit() {
@@ -43,30 +42,11 @@ export class OptionsComponent implements OnInit {
     });
   }
 
-  private saveSettings() : void{
-    chrome.permissions.request({
-      origins: [
-        this.harvestBaseUrl,
-        this.jiraBaseUrl
-      ]
-    }, (granted) => {
-      if (granted) {
-        chrome.storage.sync.set({
-            harvestBaseUrl: this.harvestBaseUrl,
-            jiraBaseUrl: this.jiraBaseUrl
-        }, () => {
-          this.alertService.success("Your settings were saved. You can now close the configuration and start syncing" +
-            " your timesheet entries!");
-          this.changeGlobal.tick();
-          }
-        );
-      } else {
-        this.alertService.error("The permission for " + this.harvestBaseUrl + " and " + this.jiraBaseUrl + " was" +
-          " declined. Your settings were not saved. " +
-          " Without this permission this plugin will not be able to sync your timesheet.");
-        this.changeGlobal.tick();
-      }
-    });
+  private saveSettings(){
+    this.optionsService.saveSettings(this.harvestBaseUrl, this.jiraBaseUrl);
   }
 
+  private openUrlInNewTab(openUrl :string){
+    chrome.tabs.create({url: openUrl});
+  }
 }

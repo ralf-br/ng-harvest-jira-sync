@@ -6,21 +6,33 @@
       <div class="form-group col-xs-12">
         <label>Your Harvest Base URL you want to sync from: (Include
           http(s) and a trailing slash "/") </label>
-        <input class="form-control" type="text"
-          name="harvestBaseUrl" [(ngModel)]="harvestBaseUrl" [placeholder]="harvestBaseUrl_example"
-          [pattern]="url_pattern" required />
+        <div class="urlAndButton">
+          <input #harvestUrl="ngModel" class="form-control" type="text" name="harvestBaseUrl"
+            [(ngModel)]="harvestBaseUrl" [placeholder]="harvestBaseUrl_example" [pattern]="url_pattern" required />
+          <button class="btn btn-link" title="Open Url in new tab" (click)="openUrlInNewTab(harvestBaseUrl)"
+            [disabled]="!harvestUrl.valid">
+            <span class="glyphicon glyphicon-eye-open"></span>
+          </button>
+        </div>
       </div>
 
       <div class="form-group col-xs-12">
         <label>Your JIRA Base URL you want to sync to: (Include
           http(s) and a trailing slash "/") </label>
-        <input class="form-control" type="text"
-          name="jiraBaseUrl" [(ngModel)]="jiraBaseUrl" [placeholder]="jiraBaseUrl_example"
-          [pattern]="url_pattern" required />
+        <div class="urlAndButton">
+          <input #jiraUrl="ngModel" class="form-control" type="text" name="jiraBaseUrl"
+            [(ngModel)]="jiraBaseUrl" [placeholder]="jiraBaseUrl_example" [pattern]="url_pattern" required />
+          <button class="btn btn-link" title="Open Url in new tab" (click)="openUrlInNewTab(jiraBaseUrl)"
+            [disabled]="!jiraUrl.valid">
+            <span class="glyphicon glyphicon-eye-open"></span>
+          </button>
+        </div>
       </div>
 
       <div class="form-group col-xs-12">
-        <button type="submit" class="btn btn-default" [disabled]="!myForm.valid" (click)="saveSettings()"> Save Settings
+        <button type="submit" class="btn btn-default" [disabled]="!myForm.valid" (click)="saveSettings()">
+          <span class="glyphicon glyphicon-floppy-save"></span>
+          Save Settings
         </button>
       </div>
     </div>
