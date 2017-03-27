@@ -12,15 +12,12 @@ import "rxjs/add/operator/finally";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 import {DatepickerComponent} from "./datepicker/datepicker.component";
-import {TimesheetService} from "./timesheet/service/timesheet.service";
-import {HarvestService} from "./timesheet/service/harvest.service";
-import {JiraService} from "./timesheet/service/jira.service";
 import {SpinnerComponent} from "./spinner/spinner.component";
-import {SpinnerService} from "./spinner/spinner.service";
 import {Router} from "@angular/router";
 import {AppRoutingModule} from "./app-routing.module";
 import {MainSyncOverviewComponent} from "./main-sync-overview/main-sync-overview.component";
 import {OptionsComponent} from "./options/options.component";
+import {OptionsService} from "./options/options.service";
 
 
 @NgModule({
@@ -39,7 +36,7 @@ import {OptionsComponent} from "./options/options.component";
     HttpModule,
     AppRoutingModule
   ],
-  providers: [myRequestOptionsProvider, AlertService, SpinnerService, TimesheetService, HarvestService, JiraService],
+  providers: [myRequestOptionsProvider, AlertService, OptionsService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

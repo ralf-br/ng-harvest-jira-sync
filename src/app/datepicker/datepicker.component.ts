@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {TimesheetService} from "../timesheet/service/timesheet.service";
+import {OptionsService} from "../options/options.service";
 
 @Component({
   selector: 'app-datepicker',
@@ -10,11 +11,15 @@ export class DatepickerComponent implements OnInit {
 
   currentDate : Date;
 
-  constructor(private timesheetService : TimesheetService) { }
+  constructor(private timesheetService : TimesheetService,
+              private optionsService : OptionsService) { }
 
   ngOnInit() {
     this.currentDate = this.todayStartOfDay();
-    this.updateTimesheet()
+
+    //this is the central point to start loading the timesheet for today
+    //load the stored options (urls) and only then continue with updating the timesheet.
+    this.optionsService.loadOptionsToEnvironment(this.updateTimesheet);
   }
 
   private currentDateIsToday() : boolean{
@@ -36,7 +41,7 @@ export class DatepickerComponent implements OnInit {
     this.updateTimesheet();
   }
 
-  private updateTimesheet(){
+  private updateTimesheet = () => {
     this.timesheetService.clearAlertAndInitTimesheet(this.currentDate);
   };
 

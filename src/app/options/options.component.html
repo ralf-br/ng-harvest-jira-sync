@@ -1,3 +1,28 @@
-<p>
-  options works!
-</p>
+<app-alert></app-alert>
+
+<div class="container-fluid">
+  <form #myForm="ngForm">
+    <div class="row">
+      <div class="form-group col-xs-12">
+        <label>Your Harvest Base URL you want to sync from: (Include
+          http(s) and a trailing slash "/") </label>
+        <input class="form-control" type="text"
+          name="harvestBaseUrl" [(ngModel)]="harvestBaseUrl" [placeholder]="harvestBaseUrl_example"
+          [pattern]="url_pattern" required />
+      </div>
+
+      <div class="form-group col-xs-12">
+        <label>Your JIRA Base URL you want to sync to: (Include
+          http(s) and a trailing slash "/") </label>
+        <input class="form-control" type="text"
+          name="jiraBaseUrl" [(ngModel)]="jiraBaseUrl" [placeholder]="jiraBaseUrl_example"
+          [pattern]="url_pattern" required />
+      </div>
+
+      <div class="form-group col-xs-12">
+        <button type="submit" class="btn btn-default" [disabled]="!myForm.valid" (click)="saveSettings()"> Save Settings
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
