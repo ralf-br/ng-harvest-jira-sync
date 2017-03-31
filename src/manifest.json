@@ -17,9 +17,18 @@
     "default_popup": "index.html"
   },
 
+  "options_ui": {
+    "page": "index.html?options",
+    "chrome_style": true
+  },
+
   "permissions": [
-    "https://deviceinsight.harvestapp.com/daily",
-    "https://jira.device-insight.com/rest/api/2/"
+    "storage"
+  ],
+
+  "optional_permissions": [
+    "http://*/",
+    "https://*/"
   ],
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"

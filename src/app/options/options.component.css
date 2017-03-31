@@ -1,0 +1,16 @@
+.container-fluid{
+  min-width: 700px;
+}
+
+.form-control.ng-invalid {
+  border-left: 5px solid #a94442;
+}
+
+.form-control.ng-valid {
+  border-left: 5px solid #42A948;
+}
+
+.urlAndButton .form-control{
+  display: inline-block;
+  width: 90%;
+}

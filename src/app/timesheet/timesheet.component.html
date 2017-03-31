@@ -1,24 +1,24 @@
 <table class="table">
   <tr *ngFor="let entry of timesheetEntries">
-    <td class="comment"><a *ngIf="entry.hasJiraTicket()"
+    <td class="comment"><a *ngIf="entry.hasJiraTicket()" title="Open Worklog in JIRA Ticket"
         href="{{jiraBaseUrl}}browse/{{entry.getJiraTicket()}}?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
         target="_blank">{{entry.getJiraTicket()}}: </a>{{entry.getCommentWithoutJiraTicket()}}
     </td>
     <td class="text-nowrap">{{entry.getTimeSpentString()}}</td>
     <td class="text-nowrap">
-      <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" />
+      <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" title="Worklog in Harvest" />
       <span class="harvest-timer" *ngIf="entry.harvestEntry?.timer_started_at">
-        <img src="/assets/icons/harvest_timer.gif" />
+        <img src="/assets/icons/harvest_timer.gif" title="Timer is running in Harvest. Stop it first to be able to sync" />
       </span>
 
       <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog"
         (mouseover)="trashJiraIcon($event)" (mouseout)="normalJiraIcon($event)"
-        (click)="deleteJiraWorklog(entry)" title="Delete JIRA worklog on click!"/>
+        (click)="deleteJiraWorklog(entry)" title="Worklog in JIRA. Delete JIRA worklog on click!"/>
 
       <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="copyHarvestToJira(entry)"
           type="button" class="btn btn-default">
 
-        <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-play-circle"></span>
         Sync to {{entry.harvestEntry.getJiraTicket()}}
 
       </button>
@@ -31,7 +31,7 @@
       <button *ngIf="multipleJiraSyncsOffered()" [disabled]="anyEntrySyncing()" (click)="copyAllFromHarvestToJira()"
         type="button" class="btn btn-default">
 
-        <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-send"></span>
         Sync all above to Jira
       </button>
     </td>

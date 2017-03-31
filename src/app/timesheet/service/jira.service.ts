@@ -13,32 +13,40 @@ import {UtilsString} from "../../utils/UtilsString";
 @Injectable()
 export class JiraService {
 
-  private jiraRestBaseUrl = environment.jiraBaseUrl + "rest/api/2/";
-  private jiraIssueUrl = this.jiraRestBaseUrl + "issue/";
-  private jiraMyselfUrl = this.jiraRestBaseUrl + "myself";
-  private jiraSearchWorklog = this.jiraRestBaseUrl + "search?fields=summary&jql=worklogAuthor=currentUser() and worklogDate='{0}'";
-  private jiraWorklog = "/worklog/";
+  private jiraRestBaseUrl : string;
+  private jiraIssueUrl : string;
+  private jiraMyselfUrl : string;
+  private jiraSearchWorklog : string;
+  private jiraWorklog : string;
 
   constructor(private http:Http) { }
 
   public loadMyJiraAccount() : Observable<JiraAccount> {
+    this.setUrls();
+
     return this.http.get(this.jiraMyselfUrl, { withCredentials: true })
       .map(response => response.json())
       .map(json => new JiraAccount(json));
   }
 
   public loadMyJiraWorklogs(date: Date) : Observable<JiraWorklog[][]> {
+    this.setUrls();
+
     return this.loadMyIssuesWithWorklog(date)
       .flatMap(issues => this.loadMyJiraWorklogsForIssues(date, issues))
   }
 
   public deleteWorklog(worklog : JiraWorklog) : Observable<Response> {
+    this.setUrls();
+
     let deleteWorklogUrl = this.jiraIssueUrl + worklog.issueId + this.jiraWorklog + worklog.id;
 
     return this.http.delete(deleteWorklogUrl, { withCredentials: true });
   }
 
   public copyHarvestToJira(timesheetEntry: TimesheetEntry) : Observable<JiraWorklog> {
+    this.setUrls();
+
     let postWorklogUrl = this.jiraIssueUrl + timesheetEntry.harvestEntry.getJiraTicket() + this.jiraWorklog;
 
     let jiraWorklog : JiraWorklog = new JiraWorklog();
@@ -79,5 +87,13 @@ export class JiraService {
       .map(response => <JiraWorklog[]> response.json().worklogs)
       .map(worklogs => {worklogs.forEach(worklog => worklog.issueKey = issue.key); return worklogs; }
       )
+  }
+
+  private setUrls(){
+    this.jiraRestBaseUrl = environment.jiraBaseUrl + "rest/api/2/";
+    this.jiraIssueUrl = this.jiraRestBaseUrl + "issue/";
+    this.jiraMyselfUrl = this.jiraRestBaseUrl + "myself";
+    this.jiraSearchWorklog = this.jiraRestBaseUrl + "search?fields=summary&jql=worklogAuthor=currentUser() and worklogDate='{0}'";
+    this.jiraWorklog = "/worklog/";
   }
 }
