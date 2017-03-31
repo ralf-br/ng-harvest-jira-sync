@@ -30,12 +30,12 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
   - scale smaller screenshot via gimp to 1280px width
 - `cd dist`
 - `zip -r ../releases/ng-harvest-jira-sync-x_y_z.zip *`
+- upload zip file via https://chrome.google.com/webstore/developer/dashboard
+  - update description and screenshot if relevant
 - commit to development branch / release branch
 - tag with new version
 - push commit & tag
 - merge into master branch
-- upload zip file via https://chrome.google.com/webstore/developer/dashboard
-  - update description and screenshot if relevant
 - change version in development to next feature release version plus .999 
 
 
