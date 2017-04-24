@@ -2,8 +2,8 @@
   "manifest_version": 2,
 
   "name": "Harvest -> JIRA Sync",
-  "description": "Compares your Harvest & JIRA Worklog Entries. You can one-click-sync Harvest to JIRA & delete JIRA entries.",
-  "version": "0.5.0.999",
+  "description": "One-click-sync your Harvest Worklog entries to your JIRA Tickets.",
+  "version": "0.4.1",
 
   "icons":{
     "16": "assets/icons/icon16.png",

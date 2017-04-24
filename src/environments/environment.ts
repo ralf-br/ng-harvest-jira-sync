@@ -5,8 +5,8 @@
 
 export const environment = {
   production: false,
-  jiraBaseUrl: "https://jira.device-insight.com/",
+  jiraBaseUrl: null,
   jiraBaseUrl_example: "https://your-company.atlassian.net/",
-  harvestBaseUrl: "https://deviceinsight.harvestapp.com/",
+  harvestBaseUrl: null,
   harvestBaseUrl_example: "https://your-company.harvestapp.com/"
 };
