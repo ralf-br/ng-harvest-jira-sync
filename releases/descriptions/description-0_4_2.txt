@@ -1,0 +1,30 @@
+One-click-sync your Harvest worklogs to JIRA with this browser extension!
+You need to be logged in to your Harvest & JIRA account and configure the Urls on the settings page.
+The extension popup will list you all worklogs you have in Harvest & JIRA for today. If the worklogs match in JIRA-Ticket, duration & exact comment they will be considered a match and listed in one line. You can navigate back and forth in time to also compare past days.
+
+If an entry is only present in Harvest, and the comment begins with a valid JIRA Ticket Nr, you will get offered a one-click-sync to JIRA. There is also a convenience button for syncing all entries of a day at once.
+
+Changelog:
+* Current Version 0.4.2
+  - bugfix for JIRA links
+
+* 0.4.1
+  - no default Urls anymore for first public release, the user gets prompted to enter his base Urls on first usage
+
+* 0.4.0
+  - added a settings page to configure and test Harvest & JIRA Urls
+  - the plugin only requests permissions to the concrete configured urls at runtime
+
+* 0.3.0
+  - Display hours in JIRA format as 1h 30m
+  - Daily sum of hours logged
+  - Spinner for long running requests
+  - Sync all sequentially (not parallel) due to JIRA bug
+
+* 0.2.0
+  - Navigating back and forward in time faster (added +-7 days button)
+  - Sync all entries of a day button if more than 1 entry was found for syncing
+  - Provided more icons - so the icon is also shown in the chrome://extensions overview
+
+* Version 0.1
+  - base version allowing all basic syncing single entries to JIRA
