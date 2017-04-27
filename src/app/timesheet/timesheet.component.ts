@@ -11,9 +11,6 @@ import {UtilsJira} from "../utils/UtilsJira";
 })
 export class TimesheetComponent implements OnInit {
 
-  //Used for the html link to JIRA - ignore "unused" warning
-  private jiraBaseUrl = environment.jiraBaseUrl;
-
   constructor(private timesheetService : TimesheetService) { }
 
   ngOnInit() {
@@ -23,8 +20,8 @@ export class TimesheetComponent implements OnInit {
     return this.timesheetService.timesheetEntries;
   }
 
-  get myJiraAccount(){
-    return this.timesheetService.myJiraAccount;
+  get jiraBaseUrl(){
+    return environment.jiraBaseUrl;
   }
 
   private copyHarvestToJira(timesheetEntry: TimesheetEntry){
