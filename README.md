@@ -1,5 +1,10 @@
 # NgHarvestJiraSync
 
+## Chrome Webstore
+The latest release version can be found in the chrome webstore.
+https://chrome.google.com/webstore/detail/harvest-%3E-jira-sync/imogkeoglmoaghpegcmghjicbdgbahio
+
+## Preparation for local build
 This project was initially generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0-beta.32.3.
 - Angular-cli must be installed locally to build the project. See also above link.
   - Install npm with `sudo dnf install npm`
