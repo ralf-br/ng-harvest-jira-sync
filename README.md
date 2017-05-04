@@ -51,7 +51,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 
 ####################################
-## the following is NOT RELEVANT/USED
+# Local Server & Tests are not used
 ####################################
 
 ## Development server
