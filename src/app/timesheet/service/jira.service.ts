@@ -64,7 +64,7 @@ export class JiraService {
   }
 
   private loadMyIssuesWithWorklog(date : Date) : Observable<JiraIssue[]> {
-    let jiraSearchUrl = UtilsString.formatString(this.jiraSearchWorklog, [UtilsDate.getDateInFormatYYYYMMDD(date)])
+    let jiraSearchUrl = UtilsString.formatString(this.jiraSearchWorklog, [UtilsDate.getDateInFormatYYYYMMDD(date)]);
     return this.http.get(jiraSearchUrl, { withCredentials: true })
       .map(response => response.json().issues);
   }
