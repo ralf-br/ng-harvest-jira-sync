@@ -23,14 +23,16 @@ export class HarvestService {
   }
 
   loadHarvestEntries(date : Date): Observable<HarvestEntry[]> {
-    let harvestDailyUrl = environment.harvestBaseUrl + "daily/";
-    console.debug("load Harvest Entries with harvestDailyUrl: " + harvestDailyUrl);
-
+    let harvestDailyBaseUrl = environment.harvestBaseUrl + "daily/";
     let dayOfYearAndYearUrlPart = UtilsDate.getDayOfYear(date)+ "/" + date.getFullYear();
-    return this.http.get(harvestDailyUrl + dayOfYearAndYearUrlPart, { withCredentials: true })
+    let harvestDailyUrl =  harvestDailyBaseUrl + dayOfYearAndYearUrlPart;
+
+    console.debug("load Harvest Entries with harvestDailyUrl: " + harvestDailyUrl);
+    return this.http.get(harvestDailyUrl, { withCredentials: true })
       .map(response => response.json())
       .map(json => json.day_entries)
       .map(day_entries => day_entries
+        .filter(day_entry => day_entry.spent_at == UtilsDate.getDateInFormatYYYYMMDD(date))
         .map(day_entry => new HarvestEntry(day_entry)));
   }
 
