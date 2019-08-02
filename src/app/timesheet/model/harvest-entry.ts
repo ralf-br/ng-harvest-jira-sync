@@ -19,10 +19,10 @@ export class HarvestEntry extends JsonSerializable{
   timer_started_at: string;
 
   //https://regex101.com/r/cqsnSc/1
-  readonly jiraTicketRegexp = /^[A-Z]+-[0-9]+(?=\s|:|$)/i;
+  readonly jiraTicketRegexp = /^[A-Z0-9]+-[0-9]+(?=\s|:|$)/i;
 
   //https://regex101.com/r/vKeuu1/2
-  readonly jiraTicketPrefixToRemoveRegexp = /^[A-Z]+-[0-9]+(?:\s+|:\s*|\s*$)/i;
+  readonly jiraTicketPrefixToRemoveRegexp = /^[A-Z0-9]+-[0-9]+(?:\s+|:\s*|\s*$)/i;
 
   public hasJiraTicket = () : boolean => {
     return this.jiraTicketRegexp.test(this.notes);
