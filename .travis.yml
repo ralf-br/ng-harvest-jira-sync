@@ -18,7 +18,7 @@ deploy:
   provider: s3
   access_key_id: "AKIAW24IA3X4K5DIW46H"
   secret_access_key: $S3_SECRET_ACCESS_KEY
-  bucket: "ng-harvest-jira-sync-travis-ci"
+  bucket: "ng-harvest-jira-sync-build-artifacts"
   region: eu-west-3
   skip_cleanup: true
   local_dir: build-artifact
