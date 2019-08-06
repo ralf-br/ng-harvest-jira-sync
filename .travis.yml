@@ -11,9 +11,12 @@ cache:
 script:
   - npm install
   - ng build
-  - zip -r ng-harvest-jira-sync.zip dist/*
+  - mkdir build-artifact
+  - zip -r build-artifact/ng-harvest-jira-sync.zip dist/*
 
-addons:
-  artifacts:
-    paths:
-      - ng-harvest-jira-sync.zip
+deploy:
+  provider: s3
+  access_key_id: "AKIAW24IA3X4K5DIW46H"
+  secret_access_key: $S3_SECRET_ACCESS_KEY
+  bucket: "ng-harvest-jira-sync-travis-ci"
+  local_dir: build-artifact
