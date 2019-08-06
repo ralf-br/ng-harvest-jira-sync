@@ -11,3 +11,9 @@ cache:
 script:
   - npm install
   - ng build
+  - zip -r ng-harvest-jira-sync.zip dist/*
+
+addons:
+  artifacts:
+    paths:
+      - ng-harvest-jira-sync.zip
