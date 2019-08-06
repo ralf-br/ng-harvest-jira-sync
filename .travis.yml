@@ -12,7 +12,7 @@ script:
   - npm install
   - ng build
   - mkdir build-artifact
-  - zip -r build-artifact/ng-harvest-jira-sync.zip dist/*
+  - zip -r build-artifact/${TRAVIS_BRANCH}/ng-harvest-jira-sync-${TRAVIS_COMMIT}.zip dist/*
 
 deploy:
   provider: s3
