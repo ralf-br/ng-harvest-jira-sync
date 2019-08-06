@@ -11,7 +11,7 @@ cache:
 script:
   - npm install
   - ng build
-  - mkdir build-artifact
+  - mkdir -p build-artifact/${TRAVIS_BRANCH}
   - zip -r build-artifact/${TRAVIS_BRANCH}/ng-harvest-jira-sync-${TRAVIS_COMMIT}.zip dist/*
 
 deploy:
