@@ -3,7 +3,7 @@
 
   "name": "Harvest -> JIRA Sync",
   "description": "One-click-sync your Harvest Worklog entries to your JIRA Tickets.",
-  "version": "0.6.0.999",
+  "version": "0.5.0.0",
 
   "icons":{
     "16": "assets/icons/icon16.png",
