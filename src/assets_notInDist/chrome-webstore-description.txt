@@ -5,7 +5,15 @@ The extension popup will list you all worklogs you have in Harvest & JIRA for to
 If an entry is only present in Harvest, and the comment begins with a valid JIRA Ticket Nr, you will get offered a one-click-sync to JIRA. There is also a convenience button for syncing all entries of a day at once.
 
 Changelog:
-* Current Version 0.4.1
+* 0.6.0 In development
+  - update harvest api?
+  - update angular version?
+* 0.5.0
+  - allow numbers in the JIRA project name to enable tickets like `ABC4-789`
+* 0.4.2
+  - bugfix for JIRA links
+
+* 0.4.1
   - no default Urls anymore for first public release, the user gets prompted to enter his base Urls on first usage
 
 * 0.4.0
