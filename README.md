@@ -45,7 +45,7 @@ Example release of version 0.6.0:
 - upload zip file via https://chrome.google.com/webstore/developer/dashboard
   - update description and screenshot if relevant
 - change manifest.json in release/0.6.0 to next feature release version plus .999 (SNAPSHOT) -> 0.7.0.999
-- commit changes: git commit -ad "snapshot 0.7.0.999"
+- commit changes: git commit -am "snapshot 0.7.0.999"
 - push: git push
 - pull request to develop branch on github - accept it
 
