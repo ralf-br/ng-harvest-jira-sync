@@ -13,12 +13,14 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
+    - name: set release version as environment variable
+      run: |
+        grep '"version":' src/manifest.json | cut -d '"' -f 4
+        echo "::set-env name=MY_VERSION::yellow"
     - name: npm install and build
       run: |
         npm ci
         npm run build
-        export MY_VERSION=`grep '"version":' src/manifest.json | cut -d '"' -f 4`
-        echo $MY_VERSION
     - name: Upload artifact for version ${{ env.MY_VERSION }}
       uses: actions/upload-artifact@v1
       with:
