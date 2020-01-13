@@ -17,9 +17,8 @@ jobs:
       run: |
         npm ci
         npm run build
-        (cd dist && zip -r ../ng-harvest-jira-sync-chrome-plugin-bundle.zip *)
     - name: Upload artifact
       uses: actions/upload-artifact@v1
       with:
-        name: ng-harvest-jira-sync-chrome-plugin-bundle
-        path: ng-harvest-jira-sync-chrome-plugin-bundle.zip
+        name: ng-harvest-jira-sync-chrome-plugin-bundle-${GITHUB_SHA::8}
+        path: dist
