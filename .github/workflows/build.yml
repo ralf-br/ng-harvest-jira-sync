@@ -17,8 +17,10 @@ jobs:
       run: |
         npm ci
         npm run build
-    - name: Upload artifact
+        export MY_VERSION=`grep '"version":' src/manifest.json | cut -d '"' -f 4`
+        echo $MY_VERSION
+    - name: Upload artifact for version ${{ env.MY_VERSION }}
       uses: actions/upload-artifact@v1
       with:
-        name: ng-harvest-jira-sync-chrome-plugin-bundle-${{ GITHUB_SHA }}
+        name: ng-harvest-jira-sync-chrome-plugin-bundle-${{ env.MY_VERSION }}
         path: dist
