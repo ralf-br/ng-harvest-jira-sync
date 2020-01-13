@@ -1,3 +1,5 @@
+/// <reference types="chrome"/>
+
 import {Injectable, NgZone} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {AlertService} from "../alert/alert.service";

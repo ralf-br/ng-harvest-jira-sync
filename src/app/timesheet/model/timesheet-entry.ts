@@ -44,7 +44,7 @@ export class TimesheetEntry {
     if(this.harvestEntry != null){
       return this.harvestEntry.getCommentWithoutJiraTicket();
     } else {
-      return this.jiraWorklog.comment;
+      return this.jiraWorklog.getComment();
     }
   };
 

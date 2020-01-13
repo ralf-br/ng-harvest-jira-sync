@@ -6,8 +6,8 @@ If an entry is only present in Harvest, and the comment begins with a valid JIRA
 
 Changelog:
 * 0.6.0 In development
-  - update harvest api?
-  - update angular version?
+  - update angular version from angular 2 to angular 8.2
+  - fixed issue #5 when harvest entries without comment where not detected as matches
 * 0.5.0
   - allow numbers in the JIRA project name to enable tickets like `ABC4-789`
 * 0.4.2

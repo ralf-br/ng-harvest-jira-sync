@@ -18,8 +18,6 @@ export class OptionsComponent implements OnInit {
   //https://regex101.com/r/8aYBuz/3
   private url_pattern = /^((http[s]?):\/\/)([^:\/\s]+)((\/\w+)*\/)\/*$/;
 
-  @ViewChild('myForm') myForm;
-
   constructor(private alertService : AlertService,
               private optionsService : OptionsService,
               private zone: NgZone) { }

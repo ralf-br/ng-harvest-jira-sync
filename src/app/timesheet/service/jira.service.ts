@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
-import {Http, Response} from "@angular/http";
+import {HttpClient} from "@angular/common/http";
 
 import {TimesheetEntry} from "../model/timesheet-entry";
 import {JiraWorklog} from "../model/jira-worklog";
 import {environment} from "../../../environments/environment";
-import {Observable} from "rxjs";
 import {JiraAccount} from "../model/jira-account";
 import {JiraIssue} from "../model/jira-issue";
 import {UtilsDate} from "../../utils/UtilsDate";
 import {UtilsString} from "../../utils/UtilsString";
+import {flatMap, map} from "rxjs/operators";
+import {forkJoin, Observable, of} from "rxjs";
+import {HarvestEntry} from "../model/harvest-entry";
 
 @Injectable()
 export class JiraService {
@@ -19,29 +21,32 @@ export class JiraService {
   private jiraSearchWorklog : string;
   private jiraWorklog : string;
 
-  constructor(private http:Http) { }
+  constructor(private httpClient:HttpClient) { }
 
   public loadMyJiraAccount() : Observable<JiraAccount> {
     this.setUrls();
 
-    return this.http.get(this.jiraMyselfUrl, { withCredentials: true })
-      .map(response => response.json())
-      .map(json => new JiraAccount(json));
+    return this.httpClient.get(this.jiraMyselfUrl, { withCredentials: true })
+      .pipe(
+        map(json => new JiraAccount(json))
+      );
   }
 
   public loadMyJiraWorklogs(date: Date) : Observable<JiraWorklog[][]> {
     this.setUrls();
 
     return this.loadMyIssuesWithWorklog(date)
-      .flatMap(issues => this.loadMyJiraWorklogsForIssues(date, issues))
+      .pipe(
+        flatMap(issues => this.loadMyJiraWorklogsForIssues(date, issues))
+      )
   }
 
-  public deleteWorklog(worklog : JiraWorklog) : Observable<Response> {
+  public deleteWorklog(worklog : JiraWorklog) : Observable<Object> {
     this.setUrls();
 
     let deleteWorklogUrl = this.jiraIssueUrl + worklog.issueId + this.jiraWorklog + worklog.id;
 
-    return this.http.delete(deleteWorklogUrl, { withCredentials: true });
+    return this.httpClient.delete(deleteWorklogUrl, { withCredentials: true });
   }
 
   public copyHarvestToJira(timesheetEntry: TimesheetEntry) : Observable<JiraWorklog> {
@@ -54,19 +59,22 @@ export class JiraService {
     jiraWorklog.started = timesheetEntry.harvestEntry.getISOStartDate();
     jiraWorklog.timeSpentSeconds = timesheetEntry.harvestEntry.getTimeInSeconds();
 
-    return this.http.post(postWorklogUrl, jiraWorklog, { withCredentials: true })
-      .map(response => response.json())
-      .map(json => new JiraWorklog(json))
-      .map(worklog => {
-        worklog.issueKey = timesheetEntry.getJiraTicket();
-        return worklog;
-      });
+    return this.httpClient.post(postWorklogUrl, jiraWorklog, { withCredentials: true })
+      .pipe(
+        map(json => new JiraWorklog(json)),
+        map(worklog => {
+            worklog.issueKey = timesheetEntry.getJiraTicket();
+            return worklog;
+          })
+      )
   }
 
   private loadMyIssuesWithWorklog(date : Date) : Observable<JiraIssue[]> {
     let jiraSearchUrl = UtilsString.formatString(this.jiraSearchWorklog, [UtilsDate.getDateInFormatYYYYMMDD(date)]);
-    return this.http.get(jiraSearchUrl, { withCredentials: true })
-      .map(response => response.json().issues);
+    return this.httpClient.get(jiraSearchUrl, { withCredentials: true })
+      .pipe(
+        map(json => json['issues'])
+      )
   }
 
   private loadMyJiraWorklogsForIssues = (date: Date, myJiraIssues: JiraIssue[]) : Observable<JiraWorklog[][]> => {
@@ -74,18 +82,23 @@ export class JiraService {
       .map(issue => this.loadWorklogsForIssue(issue));
 
     if(loadWorklogsForIssueObservables.length > 0){
-      return Observable.forkJoin(loadWorklogsForIssueObservables);
+      return forkJoin(loadWorklogsForIssueObservables);
     } else {
-      return Observable.of([]);
+      return of([]);
     }
   };
 
   private loadWorklogsForIssue(issue : JiraIssue) : Observable<JiraWorklog[]> {
     let getWorklogUrl = this.jiraIssueUrl + issue.id + this.jiraWorklog;
 
-    return this.http.get(getWorklogUrl, { withCredentials: true })
-      .map(response => <JiraWorklog[]> response.json().worklogs)
-      .map(worklogs => {worklogs.forEach(worklog => worklog.issueKey = issue.key); return worklogs; }
+    return this.httpClient.get<JiraWorklog[]>(getWorklogUrl, { withCredentials: true })
+      .pipe(
+        map(json => json['worklogs']),
+        map(worklogs => worklogs.map(worklog => new JiraWorklog(worklog))),
+        map(worklogs => {
+          worklogs.forEach(worklog => worklog.issueKey = issue.key);
+          return worklogs;
+        })
       )
   }
 

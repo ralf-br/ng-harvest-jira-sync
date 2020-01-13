@@ -1,39 +1,41 @@
 <table class="table">
-  <tr *ngFor="let entry of timesheetEntries">
-    <td class="comment"><a *ngIf="entry.hasJiraTicket()" title="Open Worklog in JIRA Ticket"
-        href="{{jiraBaseUrl}}browse/{{entry.getJiraTicket()}}?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
-        target="_blank">{{entry.getJiraTicket()}}: </a>{{entry.getCommentWithoutJiraTicket()}}
-    </td>
-    <td class="text-nowrap">{{entry.getTimeSpentString()}}</td>
-    <td class="text-nowrap">
-      <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" title="Worklog in Harvest" />
-      <span class="harvest-timer" *ngIf="entry.harvestEntry?.timer_started_at">
-        <img src="/assets/icons/harvest_timer.gif" title="Timer is running in Harvest. Stop it first to be able to sync" />
-      </span>
+  <tbody>
+    <tr *ngFor="let entry of timesheetEntries">
+      <td class="comment"><a *ngIf="entry.hasJiraTicket()" title="Open Worklog in JIRA Ticket"
+          href="{{jiraBaseUrl}}browse/{{entry.getJiraTicket()}}?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
+          target="_blank">{{entry.getJiraTicket()}}: </a>{{entry.getCommentWithoutJiraTicket()}}
+      </td>
+      <td class="text-nowrap">{{entry.getTimeSpentString()}}</td>
+      <td class="text-nowrap">
+        <img src="/assets/icons/harvest.png" *ngIf="entry.harvestEntry" title="Worklog in Harvest" />
+        <span class="harvest-timer" *ngIf="entry.harvestEntry?.timer_started_at">
+          <img src="/assets/icons/harvest_timer.gif" title="Timer is running in Harvest. Stop it first to be able to sync" />
+        </span>
 
-      <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog"
-        (mouseover)="trashJiraIcon($event)" (mouseout)="normalJiraIcon($event)"
-        (click)="deleteJiraWorklog(entry)" title="Worklog in JIRA. Delete JIRA worklog on click!"/>
+        <img src="/assets/icons/jira.png" *ngIf="entry.jiraWorklog"
+          (mouseover)="trashJiraIcon($event)" (mouseout)="normalJiraIcon($event)"
+          (click)="deleteJiraWorklog(entry)" title="Worklog in JIRA. Delete JIRA worklog on click!"/>
 
-      <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="copyHarvestToJira(entry)"
+        <button *ngIf="entry.allowSyncToJira()"  [disabled]="entry.syncing" (click)="copyHarvestToJira(entry)"
+            type="button" class="btn btn-default">
+
+          <span class="glyphicon glyphicon-play-circle"></span>
+          Sync to {{entry.harvestEntry.getJiraTicket()}}
+
+        </button>
+      </td>
+    </tr>
+    <tr class="text-muted lead" *ngIf="timesheetEntries.length >= 1">
+      <td class="text-right">Total</td>
+      <td class="text-nowrap">{{totalTimeSpentString()}}</td>
+      <td class="text-nowrap">
+        <button *ngIf="multipleJiraSyncsOffered()" [disabled]="anyEntrySyncing()" (click)="copyAllFromHarvestToJira()"
           type="button" class="btn btn-default">
 
-        <span class="glyphicon glyphicon-play-circle"></span>
-        Sync to {{entry.harvestEntry.getJiraTicket()}}
-
-      </button>
-    </td>
-  </tr>
-  <tr class="text-muted lead" *ngIf="timesheetEntries.length >= 1">
-    <td class="text-right">Total</td>
-    <td class="text-nowrap">{{totalTimeSpentString()}}</td>
-    <td class="text-nowrap">
-      <button *ngIf="multipleJiraSyncsOffered()" [disabled]="anyEntrySyncing()" (click)="copyAllFromHarvestToJira()"
-        type="button" class="btn btn-default">
-
-        <span class="glyphicon glyphicon-send"></span>
-        Sync all above to JIRA
-      </button>
-    </td>
-  </tr>
+          <span class="glyphicon glyphicon-send"></span>
+          Sync all above to JIRA
+        </button>
+      </td>
+    </tr>
+  </tbody>
 </table>
