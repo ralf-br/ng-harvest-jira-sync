@@ -13,9 +13,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-    - name: set release version as environment variable
+    - name: set release version from manifest as environment variable
       run: |
-        echo "::set-env name=MY_VERSION::grep '"version":' src/manifest.json | cut -d '"' -f 4"
+        echo "::set-env name=MY_VERSION::grep '"version":' src/manifest.json | cut -d '\"' -f 4"
     - name: npm install and build
       run: |
         npm ci
