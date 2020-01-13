@@ -20,5 +20,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v1
       with:
-        name: ng-harvest-jira-sync-chrome-plugin-bundle-${{ env.GITHUB_SHA }}
+        name: ng-harvest-jira-sync-chrome-plugin-bundle-${{ GITHUB_SHA }}
         path: dist
