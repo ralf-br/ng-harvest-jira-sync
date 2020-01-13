@@ -6,7 +6,7 @@ export class JiraWorklog extends JsonSerializable{
   //only those 3 are needed for posting new worklogs
   timeSpentSeconds: number;
   started: string;
-  comment: string;
+  comment?: string;
 
   //additional info when getting from jira
   author: JiraAccount;
@@ -15,4 +15,8 @@ export class JiraWorklog extends JsonSerializable{
 
   //needs to be enriched as not returned by jira
   issueKey: string;
+
+  public getComment = () : string => {
+    return (this.comment != null) ? this.comment : "";
+  };
 }

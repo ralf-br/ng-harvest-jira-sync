@@ -1,8 +1,0 @@
-You need to be logged in to your Harvest & JIRA account upfront. If so it will list you all worklogs you did in Harvest & JIRA for today - if the worklogs match in JIRA-Ticket, duration & exact comment they will be considered a match and listed in one line. You can navigate back and forth in time to also compare past days.
-
-If an entry is only present in Harvest you will get offered a one-click-sync to JIRA - but only if the Harvest comment begins with a valid JIRA Ticket Nr followed by a ":" or "space".
-
-Wishlist for the future:
-- Definitely move the base urls for Harvest & JIRA to a chrome extension settings page. At the moment Device Insight Harvest & JIRA Urls are still hardcoded. This must change in a future release to make the base urls configurable and this tool usable for all Harvest & Jira users - not only Device Insight.
-- Potentially a syncing back to Harvest option. This is a bit more complex as we need to select a concrete Harvest Project to book this efford to.
-- Potentially some input fields to make the time tracking directly in the chrome extension popup and save it to both Harvest & JIRA.

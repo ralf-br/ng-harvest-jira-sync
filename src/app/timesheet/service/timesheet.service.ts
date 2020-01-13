@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {Stream} from "ts-stream";
 import {HarvestService} from "./harvest.service";
 import {AlertService} from "../../alert/alert.service";
 import {HarvestEntry} from "../model/harvest-entry";
@@ -7,10 +6,11 @@ import {TimesheetEntry} from "../model/timesheet-entry";
 import {JiraService} from "./jira.service";
 import {JiraWorklog} from "../model/jira-worklog";
 import {JiraAccount} from "../model/jira-account";
-import {Observable} from "rxjs";
+import {concat, forkJoin, Observable} from "rxjs";
 import {UtilsDate} from "../../utils/UtilsDate";
 import {UtilsJira} from "../../utils/UtilsJira";
 import {SpinnerService} from "../../spinner/spinner.service";
+import {finalize} from "rxjs/operators";
 
 
 @Injectable()
@@ -54,7 +54,7 @@ export class TimesheetService {
   public copyHarvestToJira(timesheetEntry: TimesheetEntry) {
     timesheetEntry.syncing = true;
     this.jiraService.copyHarvestToJira(timesheetEntry)
-      .finally(() => timesheetEntry.syncing = false)
+      .pipe(finalize(() => timesheetEntry.syncing = false))
       .subscribe(
         jiraWorklog => {
           timesheetEntry.jiraWorklog = jiraWorklog;
@@ -69,17 +69,19 @@ export class TimesheetService {
     entriesToSync.forEach(t => t.syncing = true);
     this.spinnerService.startSpinning();
 
-    //We use Observable.concat to sync to JIRA all entries sequentially!
-    //Observable.forkJoin also worked fine for fast parallel access BUT
+    //We use concat to sync to JIRA all entries sequentially!
+    //forkJoin also worked fine for fast parallel access BUT
     //JIRA had transaction problems with multiple parallel entries to the same ticket
     //not summing up correctly the total time spend!!
-    Observable.concat(
+    concat(
       ...entriesToSync.map(t => this.jiraService.copyHarvestToJira(t))
     )
-      .finally(() => {
-        entriesToSync.forEach(t => t.syncing = false);
-        this.spinnerService.stopSpinning();
-      })
+      .pipe(
+        finalize(() => {
+          entriesToSync.forEach(t => t.syncing = false);
+          this.spinnerService.stopSpinning();
+        })
+      )
       .subscribe(
         newJiraWorklog => this.mergeMyJiraWorklogIntoTimesheet(newJiraWorklog),
         error => {
@@ -100,13 +102,13 @@ export class TimesheetService {
     this.spinnerService.startSpinning();
 
     console.info("Try loading from JIRA and Harvest for: " + UtilsDate.getDateInFormatYYYYMMDD(date));
-    Observable.forkJoin(
+    forkJoin(
       this.jiraService.loadMyJiraAccount(),
       this.harvestService.loadHarvestEntries(date),
       this.jiraService.loadMyJiraWorklogs(date)
 
     )
-      .finally(this.spinnerService.stopSpinning)
+      .pipe(finalize(this.spinnerService.stopSpinning))
       .subscribe(
         resultArray => {
           this.addMyJiraAccount(resultArray[0]);
@@ -138,23 +140,21 @@ export class TimesheetService {
   };
 
   private mergeMyJiraWorklogIntoTimesheet = (jiraWorklog: JiraWorklog) => {
-    console.debug("Search match for JIRA worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.comment + "'");
-    Stream.from(this.timesheetEntries)
+    console.debug("Search match for JIRA worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.getComment() + "'");
+    let matchingTimesheetArray = this.timesheetEntries
       .filter(timesheetEntry => timesheetEntry.harvestEntry != null)
       .filter(timesheetEntry => timesheetEntry.harvestEntry.hasJiraTicket())
       .filter(timesheetEntry => timesheetEntry.harvestEntry.getJiraTicket() == jiraWorklog.issueKey)
       .filter(timesheetEntry => timesheetEntry.harvestEntry.getTimeInSeconds() == jiraWorklog.timeSpentSeconds)
-      .filter(timesheetEntry => timesheetEntry.harvestEntry.getCommentWithoutJiraTicket() == jiraWorklog.comment)
-      .toArray()
-      .then(matchingTimesheetArray => {
-        if(matchingTimesheetArray.length >= 1){
-          console.debug("Match found - adding to existing TimesheetEntry with JIRA Worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.comment + "'");
-          matchingTimesheetArray[0].jiraWorklog = jiraWorklog;
-        } else {
-          console.debug("No matches found - adding new TimesheetEntry with JIRA Worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.comment + "'");
-          this.timesheetEntries.push(new TimesheetEntry(null, jiraWorklog));
-        }
-      });
+      .filter(timesheetEntry => timesheetEntry.harvestEntry.getCommentWithoutJiraTicket() == jiraWorklog.getComment());
+
+    if(matchingTimesheetArray.length >= 1) {
+      console.debug("Match found - adding to existing TimesheetEntry with JIRA Worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.getComment() + "'");
+      matchingTimesheetArray[0].jiraWorklog = jiraWorklog;
+    } else {
+      console.debug("No matches found - adding new TimesheetEntry with JIRA Worklog '" + jiraWorklog.issueKey + ": " + jiraWorklog.getComment() + "'");
+      this.timesheetEntries.push(new TimesheetEntry(null, jiraWorklog));
+    }
   };
 
   private addMyJiraAccount(jiraAccount: JiraAccount) {

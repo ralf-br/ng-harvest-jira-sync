@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {Response} from "@angular/http";
 
 @Injectable()
 export class AlertService {
@@ -18,7 +17,7 @@ export class AlertService {
     console.error(this.alertStatus + ": " + this.alertText + this.alertTextDetail, concreteErrorToLog);
   }
 
-  public info(infoText: string, concreteErrorToLog? : Response){
+  public info(infoText: string, concreteErrorToLog? : any){
     this.alertText = infoText;
     this.alertStatus = "alert-info";
 
@@ -41,7 +40,7 @@ export class AlertService {
     console.debug("cleared alert message");
   }
 
-  private setAlertTextDetailFromRequestError(concreteErrorToLog: Response) {
+  private setAlertTextDetailFromRequestError(concreteErrorToLog: any) {
     this.alertTextDetail = "";
 
     if (concreteErrorToLog) {

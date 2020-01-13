@@ -1,0 +1,28 @@
+name: Build ng-harvest-jira-sync
+
+on: [push]
+
+jobs:
+  build:
+    name: npm install and build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - name: set release version from manifest as environment variable
+      run: |
+        my_version=$(grep '"version":' src/manifest.json | cut -d '"' -f 4)
+        echo "::set-env name=MY_VERSION::$my_version"
+    - name: npm install and build
+      run: |
+        npm ci
+        npm run build
+    - name: Upload artifact for version ${{ env.MY_VERSION }}
+      uses: actions/upload-artifact@v1
+      with:
+        name: ng-harvest-jira-sync-chrome-plugin-bundle-${{ env.MY_VERSION }}
+        path: dist

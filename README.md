@@ -5,13 +5,14 @@ The latest release version can be found in the chrome webstore.
 https://chrome.google.com/webstore/detail/harvest-%3E-jira-sync/imogkeoglmoaghpegcmghjicbdgbahio
 
 ## Preparation for local build
-This project was initially generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0-beta.32.3.
+This project was initially generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.2.
 - Angular-cli must be installed locally to build the project. See also above link.
-  - Install npm with `sudo dnf install npm`
-  - Install angular-cli with `npm install -g @angular/cli`
+  - Install node/npm
+  - Install angular-cli globally with `npm install -g @angular/cli`
+  - Install node dependencies `npm install`
   - Build this project with `ng build` - see also below
 
-## Build and Load as Chrome Plugin
+## Build locally and load as Chrome Plugin
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 - You can import the content of the `dist/` directory to chrome
@@ -22,24 +23,31 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
   - for reloading the plugin after code changes just call `ng build` - chrome automatically detects changes
 
 ## Build release package
+Building the actual release zip file is automated with GithubActions - see .github/workflows/build.yml for details
+
+Example release of version 0.6.0:
+- create release branch: git checkout -b "release/0.6.0"
 - set release version in manifest.json
   - first digit - x: major release
   - second digit - y: feature release
   - third digit - z: bug fix release
   - firth digit: NOT used. Only set while development to "999" meaning "-SNAPSHOPT"
-- `ng build`
-- make relevant updates in releases/descriptions and releases/screenshots
+- make relevant updates of description and screenshots for the chrome webstore in src/assets_notInDist
   - screenshot needs to be 1280x800px .png
   - scale smaller screenshot via gimp to 1280px width
-- `cd dist`
-- `zip -r ../releases/ng-harvest-jira-sync-x_y_z.zip *`
+- commit changes: git commit -am "release 0.6.0"
+- tag release: git tag 0.6.0
+- push remote: git push --set-upstream origin release/0.6.0 --tags
+- pull request to master branch on github
+- wait for GitHub Actions pipeline and accept pull request
+- goto https://github.com/mineralf/ng-harvest-jira-sync/tags and manually create a Release with release notes
+- download zip file from the artifact in the pipeline
 - upload zip file via https://chrome.google.com/webstore/developer/dashboard
   - update description and screenshot if relevant
-- commit to development branch / release branch
-- tag with new version
-- push commit & tag
-- merge into master branch
-- change version in development to next feature release version plus .999 
+- change manifest.json in release/0.6.0 to next feature release version plus .999 (SNAPSHOT) -> 0.7.0.999
+- commit changes: git commit -ad "snapshot 0.7.0.999"
+- push: git push
+- pull request to develop branch on github - accept it
 
 ## Code scaffolding
 
@@ -67,6 +75,5 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
 
 - (!) no e2e tests implemented so far
