@@ -15,8 +15,7 @@ jobs:
         node-version: 10.x
     - name: set release version as environment variable
       run: |
-        grep '"version":' src/manifest.json | cut -d '"' -f 4
-        echo "::set-env name=MY_VERSION::yellow"
+        echo "::set-env name=MY_VERSION::grep '"version":' src/manifest.json | cut -d '"' -f 4"
     - name: npm install and build
       run: |
         npm ci
