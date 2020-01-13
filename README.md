@@ -35,7 +35,7 @@ Example release of version 0.6.0:
 - make relevant updates of description and screenshots for the chrome webstore in src/assets_notInDist
   - screenshot needs to be 1280x800px .png
   - scale smaller screenshot via gimp to 1280px width
-- commit changes: git commit -ad "release 0.6.0"
+- commit changes: git commit -am "release 0.6.0"
 - tag release: git tag 0.6.0
 - push remote: git push --set-upstream origin release/0.6.0 --tags
 - pull request to master branch on github
