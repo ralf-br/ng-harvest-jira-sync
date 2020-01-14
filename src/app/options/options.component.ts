@@ -10,8 +10,6 @@ import {OptionsService} from "./options.service";
 })
 export class OptionsComponent implements OnInit {
 
-  private harvestBaseUrl : string;
-  private harvestBaseUrl_example : string;
   private jiraBaseUrl : string;
   private jiraBaseUrl_example : string;
 
@@ -24,24 +22,20 @@ export class OptionsComponent implements OnInit {
 
   ngOnInit() {
     this.alertService.clear();
-    this.harvestBaseUrl_example = environment.harvestBaseUrl_example;
     this.jiraBaseUrl_example = environment.jiraBaseUrl_example;
 
     chrome.storage.sync.get({
-      harvestBaseUrl: environment.harvestBaseUrl,
       jiraBaseUrl: environment.jiraBaseUrl
     }, (items) => {
       this.zone.run(() => {
-        this.harvestBaseUrl = items['harvestBaseUrl'];
         this.jiraBaseUrl = items['jiraBaseUrl'];
-        console.info("Loaded from storage/environment for harvestBaseUrl: " + this.harvestBaseUrl
-          + " and jiraBaseUrl: " + this.jiraBaseUrl);
+        console.info("Loaded from storage/environment jiraBaseUrl: " + this.jiraBaseUrl);
       });
     });
   }
 
   private saveSettings(){
-    this.optionsService.saveSettings(this.harvestBaseUrl, this.jiraBaseUrl);
+    this.optionsService.saveSettingsAndRequestPermissions(this.jiraBaseUrl);
   }
 
   private openUrlInNewTab(openUrl :string){

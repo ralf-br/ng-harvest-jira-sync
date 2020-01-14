@@ -4,10 +4,9 @@
 
 export const environment = {
   production: false,
+  harvestBaseUrl: "https://api.harvestapp.com/api/v2/",
   jiraBaseUrl: null,
-  jiraBaseUrl_example: "https://your-company.atlassian.net/",
-  harvestBaseUrl: null,
-  harvestBaseUrl_example: "https://your-company.harvestapp.com/"
+  jiraBaseUrl_example: "https://your-company.atlassian.net/"
 };
 
 /*

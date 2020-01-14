@@ -4,17 +4,8 @@ import {UtilsString} from "../../utils/UtilsString";
 
 export class HarvestEntry extends JsonSerializable{
   id: number;
-  user_id: number;
-  spent_at: string;
-  created_at: string;
-  updated_at: string;
-  project_id: number;
-  task_id: number;
-  project: string;
-  task: string;
-  client: string;
+  spent_date: string;
   notes: string;
-  hours_without_timer: number;
   hours: number;
   timer_started_at: string;
 
@@ -53,7 +44,7 @@ export class HarvestEntry extends JsonSerializable{
 
   //In Harvest time is always represented as hours with 2 decimal digits
   //To get the correct number of minutes we multiply by 60 and round it to full minutes
-  //For example 2 minutes in Harvest will be represented as 0,03h
+  //For example 2 minutes in Harvest will be represented as 0.03
   //0.03 * 60 = 1.8 => rounding 1.8 up to 2 minutes
   //Otherwise the subsequent seconds will not be "full" minutes and resulting Jira minutes will not exactly match!
   private getTimeInMinutes = () : number => {
@@ -63,7 +54,7 @@ export class HarvestEntry extends JsonSerializable{
   //returns ex. "2017-02-19T09:00:00.000+0100"
   public getISOStartDate() : string {
     //input is only date as "2017-02-19"
-    let isoDateSpentAt = new Date(this.spent_at);
+    let isoDateSpentAt = new Date(this.spent_date);
 
     // = 9am with timezone +0100
     isoDateSpentAt.setHours(10);

@@ -14,48 +14,55 @@ export class OptionsService {
               private harvestService: HarvestService,
               private jiraService: JiraService) { }
 
-  public loadOptionsToEnvironment(callback : () => void){
+  public loadOptionsToEnvironmentAndCheckPermissions(callback : () => void){
     chrome.storage.sync.get({
-      harvestBaseUrl : null,
       jiraBaseUrl : null
     }, (items) => {
-      if(items['harvestBaseUrl'] == null || items['jiraBaseUrl'] == null){
-        console.debug("harvestBaseUrl and/or jiraBaseUrl was not defined in storage -> redirect to options page");
+      if(items['jiraBaseUrl'] == null){
+        console.debug("jiraBaseUrl was not defined in storage -> redirect to options page");
         chrome.runtime.openOptionsPage();
       } else {
-        environment.harvestBaseUrl = items['harvestBaseUrl'];
         environment.jiraBaseUrl = items['jiraBaseUrl'];
-        console.debug("harvestBaseUrl " +  + environment.harvestBaseUrl + " and jiraBaseUrl " + environment.jiraBaseUrl + " were found in storage or environment.");
+        console.debug("jiraBaseUrl " + environment.jiraBaseUrl + " was found in chrome storage.");
 
-        this.zone.run(() => {
-          callback();
+        chrome.permissions.contains({
+          origins: [
+            environment.harvestBaseUrl,
+            environment.jiraBaseUrl]
+        }, (granted) => {
+          if (granted) {
+            this.zone.run(() => {
+              callback();
+            });
+          } else {
+            chrome.runtime.openOptionsPage();
+          }
         });
       }
     });
   }
 
-  public saveSettings(harvestBaseUrl: string, jiraBaseUrl: string) : void{
-    console.debug("Trying to save " + harvestBaseUrl + " and " + jiraBaseUrl);
+  public saveSettingsAndRequestPermissions(jiraBaseUrl: string) : void{
+    console.debug("Trying to save " + environment.harvestBaseUrl + " and " + jiraBaseUrl);
     chrome.permissions.request({
       origins: [
-        harvestBaseUrl,
+        environment.harvestBaseUrl,
         jiraBaseUrl
       ]
     }, (granted) => {
       if (granted) {
-        console.debug("Did get permission to save " + harvestBaseUrl + " and " + jiraBaseUrl);
+        console.debug("Did get permission to save " + environment.harvestBaseUrl + " and " + jiraBaseUrl);
         chrome.storage.sync.set({
-          harvestBaseUrl: harvestBaseUrl,
           jiraBaseUrl: jiraBaseUrl
         }, () => {
           this.zone.run(() => {
-            this.testHarvestAndJiraUrls(harvestBaseUrl, jiraBaseUrl);
+            this.testHarvestAndJiraUrls(jiraBaseUrl);
           });
         });
       } else {
-        console.debug("Did not get permission to save " + harvestBaseUrl + " and " + jiraBaseUrl);
+        console.debug("Did not get permission to save " + environment.harvestBaseUrl + " and " + jiraBaseUrl);
         this.zone.run(() => {
-          this.alertService.error("The permission for " + harvestBaseUrl + " and " + jiraBaseUrl + " was" +
+          this.alertService.error("The permission for " + environment.harvestBaseUrl + " and " + jiraBaseUrl + " was" +
             " declined. Your settings were not saved. " +
             " Without this permission this plugin will not be able to sync your timesheet.");
         });
@@ -63,10 +70,9 @@ export class OptionsService {
     });
   }
 
-  private testHarvestAndJiraUrls(harvestBaseUrl: string, jiraBaseUrl: string){
-    console.debug("Testing connection to " + harvestBaseUrl + " and " + jiraBaseUrl);
+  private testHarvestAndJiraUrls(jiraBaseUrl: string){
+    console.debug("Testing connection to " + environment.harvestBaseUrl + " and " + jiraBaseUrl);
 
-    environment.harvestBaseUrl = harvestBaseUrl;
     environment.jiraBaseUrl = jiraBaseUrl;
 
     this.jiraService.loadMyJiraAccount()

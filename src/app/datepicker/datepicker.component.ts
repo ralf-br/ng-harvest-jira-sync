@@ -19,7 +19,7 @@ export class DatepickerComponent implements OnInit {
 
     //this is the central point to start loading the timesheet for today
     //load the stored options (urls) and only then continue with updating the timesheet.
-    this.optionsService.loadOptionsToEnvironment(this.updateTimesheet);
+    this.optionsService.loadOptionsToEnvironmentAndCheckPermissions(this.updateTimesheet);
   }
 
   private currentDateIsToday() : boolean{
