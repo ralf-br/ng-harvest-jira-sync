@@ -10,13 +10,13 @@ import {OptionsService} from "./options.service";
 })
 export class OptionsComponent implements OnInit {
 
-  private harvestBaseUrl : string;
-  private harvestBaseUrl_example : string;
-  private jiraBaseUrl : string;
-  private jiraBaseUrl_example : string;
+  harvestBaseUrl : string;
+  harvestBaseUrl_example : string;
+  jiraBaseUrl : string;
+  jiraBaseUrl_example : string;
 
   //https://regex101.com/r/8aYBuz/3
-  private url_pattern = /^((http[s]?):\/\/)([^:\/\s]+)((\/\w+)*\/)\/*$/;
+  url_pattern = /^((http[s]?):\/\/)([^:\/\s]+)((\/\w+)*\/)\/*$/;
 
   constructor(private alertService : AlertService,
               private optionsService : OptionsService,
@@ -40,11 +40,11 @@ export class OptionsComponent implements OnInit {
     });
   }
 
-  private saveSettings(){
+  saveSettings(){
     this.optionsService.saveSettings(this.harvestBaseUrl, this.jiraBaseUrl);
   }
 
-  private openUrlInNewTab(openUrl :string){
+  openUrlInNewTab(openUrl :string){
     chrome.tabs.create({url: openUrl});
   }
 }
