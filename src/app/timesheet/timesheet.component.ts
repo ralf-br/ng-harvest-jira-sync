@@ -24,39 +24,39 @@ export class TimesheetComponent implements OnInit {
     return environment.jiraBaseUrl;
   }
 
-  private copyHarvestToJira(timesheetEntry: TimesheetEntry){
+  copyHarvestToJira(timesheetEntry: TimesheetEntry){
     this.timesheetService.copyHarvestToJira(timesheetEntry);
   }
 
-  private deleteJiraWorklog(timesheetEntry: TimesheetEntry){
+  deleteJiraWorklog(timesheetEntry: TimesheetEntry){
     this.timesheetService.deleteJiraWorklog(timesheetEntry)
   }
 
-  private multipleJiraSyncsOffered(){
+  multipleJiraSyncsOffered(){
     return 2 <= this.timesheetEntries
       .filter(t => t.allowSyncToJira())
       .length;
   }
 
-  private anyEntrySyncing(){
+  anyEntrySyncing(){
     return 1 <= this.timesheetEntries
       .filter(t => t.syncing)
       .length;
   }
 
-  private copyAllFromHarvestToJira(){
+  copyAllFromHarvestToJira(){
     this.timesheetService.copyAllFromHarvestToJira();
   }
 
-  private trashJiraIcon(event){
+  trashJiraIcon(event){
     event.target.attributes['src'].value = "/assets/icons/jira-trash.png";
   }
 
-  private normalJiraIcon(event){
+  normalJiraIcon(event){
     event.target.attributes['src'].value = "/assets/icons/jira.png";
   }
 
-  private totalTimeSpentString(): string {
+  totalTimeSpentString(): string {
     let totalTimeSpentInSeconds = this.timesheetEntries
       .map(timesheetEntry => timesheetEntry.getTimeSpentInSeconds())
       .reduce((acc, val) => acc + val, 0);

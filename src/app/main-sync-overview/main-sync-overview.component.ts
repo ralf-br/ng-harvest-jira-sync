@@ -17,7 +17,7 @@ export class MainSyncOverviewComponent implements OnInit {
   ngOnInit() {
   }
 
-  private gotToSettings(){
+  gotToSettings(){
     chrome.runtime.openOptionsPage();
   }
 }

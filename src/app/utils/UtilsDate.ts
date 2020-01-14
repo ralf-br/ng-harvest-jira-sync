@@ -1,4 +1,3 @@
-declare let jQuery:any;
 
 export module UtilsDate {
 
