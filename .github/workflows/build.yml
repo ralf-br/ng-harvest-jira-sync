@@ -17,10 +17,10 @@ jobs:
       run: |
         my_version=$(grep '"version":' src/manifest.json | cut -d '"' -f 4)
         echo "::set-env name=MY_VERSION::$my_version"
-    - name: npm install and build
+    - name: npm install and prod build
       run: |
         npm ci
-        npm run build
+        npm run build-prod
     - name: Upload artifact for version ${{ env.MY_VERSION }}
       uses: actions/upload-artifact@v1
       with:

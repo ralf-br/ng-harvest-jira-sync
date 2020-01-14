@@ -1,5 +1,4 @@
 import {UtilsDate} from "./UtilsDate";
-declare let jQuery:any;
 
 export module UtilsJira {
 
