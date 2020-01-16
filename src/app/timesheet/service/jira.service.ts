@@ -56,7 +56,7 @@ export class JiraService {
 
     let jiraWorklog : JiraWorklog = new JiraWorklog();
     jiraWorklog.comment = timesheetEntry.harvestEntry.getCommentWithoutJiraTicket();
-    jiraWorklog.started = timesheetEntry.harvestEntry.getISOStartDate();
+    jiraWorklog.started = timesheetEntry.harvestEntry.getJiraISOStartDate();
     jiraWorklog.timeSpentSeconds = timesheetEntry.harvestEntry.getTimeInSeconds();
 
     return this.httpClient.post(postWorklogUrl, jiraWorklog, { withCredentials: true })

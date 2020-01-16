@@ -1,6 +1,7 @@
 
 import {JsonSerializable} from "./json-serializable";
 import {UtilsString} from "../../utils/UtilsString";
+import * as moment from "moment";
 
 export class HarvestEntry extends JsonSerializable{
   id: number;
@@ -61,14 +62,16 @@ export class HarvestEntry extends JsonSerializable{
   };
 
   //returns ex. "2017-02-19T09:00:00.000+0100"
-  public getISOStartDate() : string {
+  public getJiraISOStartDate() : string {
+
     //input is only date as "2017-02-19"
-    let isoDateSpentAt = new Date(this.spent_at);
+    let momentTs = moment(this.spent_at);
+    // = 9am with users browser timezone (which should match JIRA timezone)
+    momentTs.add(9, "hours");
 
-    // = 9am with timezone +0100
-    isoDateSpentAt.setHours(10);
-
-    //Jira cannot handle Z syntax -> replace it with +0100 timezone
-    return isoDateSpentAt.toISOString().replace("Z", "+0100");
+    const jiraISOFormat = "YYYY-MM-DDTHH:mm:ss.SSSZZ";
+    let isoStartDate = momentTs.format(jiraISOFormat);
+    console.debug(`isoStartDate to transfer in browsers timezone: ${isoStartDate}` );
+    return isoStartDate;
   };
 }
