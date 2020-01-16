@@ -24,9 +24,9 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Build release package
 Building the actual release zip file is automated with GithubActions - see .github/workflows/build.yml for details
+It's all about setting the versions and tagging. Everything happens on the develop branch. No master branch used so far.
 
 Example release of version 0.6.0:
-- create release branch: git checkout -b "release/0.6.0"
 - set release version in manifest.json
   - first digit - x: major release
   - second digit - y: feature release
@@ -37,17 +37,14 @@ Example release of version 0.6.0:
   - scale smaller screenshot via gimp to 1280px width
 - commit changes: git commit -am "release 0.6.0"
 - tag release: git tag 0.6.0
-- push remote: git push --set-upstream origin release/0.6.0 --tags
-- pull request to master branch on github
-- wait for GitHub Actions pipeline and accept pull request
-- goto https://github.com/mineralf/ng-harvest-jira-sync/tags and manually create a Release with release notes
-- download zip file from the artifact in the pipeline
+- push remote: git push --tags
+- wait for GitHub Actions pipeline and download the artifact
+- goto https://github.com/mineralf/ng-harvest-jira-sync/tags and manually create a Release including release notes and artifact
 - upload zip file via https://chrome.google.com/webstore/developer/dashboard
   - update description and screenshot if relevant
 - change manifest.json in release/0.6.0 to next feature release version plus .999 (SNAPSHOT) -> 0.7.0.999
 - commit changes: git commit -am "snapshot 0.7.0.999"
 - push: git push
-- pull request to develop branch on github - accept it
 
 ## Code scaffolding
 
