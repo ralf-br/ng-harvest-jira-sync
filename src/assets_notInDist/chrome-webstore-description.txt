@@ -2,7 +2,9 @@ One-click-sync your Harvest worklogs to JIRA with this browser extension!
 You need to be logged in to your Harvest & JIRA account and configure the Urls on the settings page.
 The extension popup will list you all worklogs you have in Harvest & JIRA for today. If the worklogs match in JIRA-Ticket, duration & exact comment they will be considered a match and listed in one line. You can navigate back and forth in time to also compare past days.
 
-If an entry is only present in Harvest, and the comment begins with a valid JIRA Ticket Nr, you will get offered a one-click-sync to JIRA. There is also a convenience button for syncing all entries of a day at once.
+If an entry is only present in Harvest, and the comment begins with a valid JIRA Ticket Nr, you will get offered a one-click-sync to JIRA. (Click the JIRA Icon again to delete the worklog) There is also a convenience button for syncing all entries of a day at once.
+
+The source code is open source and can be found on github - feel free to fork or contribute: https://github.com/mineralf/ng-harvest-jira-sync
 
 Changelog:
 * 0.8.0
