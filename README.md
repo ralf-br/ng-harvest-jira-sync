@@ -1,8 +1,8 @@
 # NgHarvestJiraSync
 
-## Chrome Webstore
-The latest release version can be found in the chrome webstore.
-https://chrome.google.com/webstore/detail/harvest-%3E-jira-sync/imogkeoglmoaghpegcmghjicbdgbahio
+# !!! DEPRECATED !!!
+This repo is not actively maintained anymore - known vulnerabilities from outdated dependencies not addressed.
+Feel free to use or clone this repo at your own risk.
 
 ## Preparation for local build
 This project was initially generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.2.
